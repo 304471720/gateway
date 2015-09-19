@@ -382,6 +382,15 @@ platform_check_image() {
 		return 0
 		;;
 
+	wifisong-ws151)
+		[ "$magic" != "0100" ] && {
+			echo "Invalid image type."
+			return 1
+		}
+
+		return 0
+		;;
+
 	tube2h)
 		alfa_check_image "$1" && return 0
 		return 1

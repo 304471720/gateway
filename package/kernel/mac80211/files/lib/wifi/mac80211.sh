@@ -119,10 +119,20 @@ $ht_capab
 
 config wifi-iface
 	option device   radio$devidx
+	option network  wifi
+	option mode     ap
+	option ssid     WiFi-${phymac}
+	option encryption none
+	option isolate  1
+
+config wifi-iface
+	option device   radio$devidx
 	option network  lan
 	option mode     ap
-	option ssid     OpenWrt
-	option encryption none
+	option ssid     WiFi-Office
+	option encryption psk-mixed
+	option key      88888888
+	option isolate  1
 
 EOF
 	devidx=$(($devidx + 1))
