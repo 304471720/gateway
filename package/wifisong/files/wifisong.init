@@ -1,0 +1,75 @@
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2014 OpenWrt.org
+
+START=99
+STOP=1
+
+USE_PROCD=1
+
+init_config=/etc/wifisong/init_config
+
+init() {
+	# Firmware version and router type information
+	routerType=$(cat /proc/cpuinfo | grep machine | awk '{print $4}')
+	version=$routerType-$(cat /etc/wifisong/version)
+
+	# Derive the initial configuration from server
+	wmac=$(cat /sys/class/net/eth1/address)
+	lmac=$(cat /sys/class/net/eth0/address)
+	nonce=$(date | md5sum | sed -r 's/([0-9a-zA-Z]+) (.+)/\1/')
+	signature=$( (echo -n $nonce; echo -n "61F7B04E443C4F6FA08CD027DF5AC638") | \
+		md5sum | sed -r 's/([0-9a-zA-Z]+) (.+)/\1/' )
+	wget http://router.lbsdata.org/device/init?wmac=$wmac\&lmac=$lmac\&v=$version\&type=$routerType\&nonce=$nonce\&signature=$signature -O $init_config
+
+	# Initializatin failed either init_config doesn't exist                
+	# or the file is in bad format                                         
+	[ ! -z $(awk -F "=" '/router_id/{print $2}' $init_config) ] && return 0
+	rm -f $init_config
+	return 1
+}
+
+init_setup() {
+	# Network configuration
+	lanip=$(awk -F '=' '/lan_ipaddr/{print $2}' $init_config)
+	uci set network.lan.ipaddr=$lanip
+
+	# WiFi configuration
+	brand=$(awk -F '=' '/wifi_ssid/{print $2}' $init_config)
+	phymac=$(cat /sys/class/ieee80211/phy0/macaddress |  \
+		sed -r 's/.+:([0-9a-fA-F]{2}):([0-9a-fA-F]{2})/\1\2/' | \
+		tr '[a-z]' '[A-Z]')
+	uci set wireless.@wifi-iface[0].ssid=$brand-$phymac
+	uci set wireless.@wifi-iface[1].ssid=$brand-Office
+
+	uci commit
+	/etc/init.d/network reload
+
+	# Enable the mon0 interface in wifi
+	# TODO: How can I remove the patch when the wifisong package is uninstalled?
+	sed -r "s/(.+)(ubus call network reload)(.+);;/\1\2\3;sleep 5;iw phy phy0 interface add mon0 type monitor;ifconfig mon0 up;;/g" -i /sbin/wifi
+}
+
+start_service() {
+	if [ ! -f $init_config ]; then
+		init && init_setup
+	fi
+
+	# Start wifisong application since it since the router has already
+	# been initialized
+	heartbeat &
+
+	# sniff
+	wifi
+	pktdump &
+	pktpostprocess &
+	pkttrans &
+}
+
+stop_service() {
+	killall -9 heartbeat
+                    
+	killall -9 pkttrans
+	killall -9 pktpostprocess
+	killall -9 pktdump
+	killall -9 tcpdump
+}
