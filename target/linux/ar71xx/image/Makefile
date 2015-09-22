@@ -560,6 +560,14 @@ define Device/tl-wr847n-v8
 endef
 TARGET_DEVICES += tl-wr841n-v8 tl-wr841n-v9 tl-wr842n-v2 tl-wr843nd-v1 tl-wr847n-v8
 
+define Device/wifisong-ws220
+	$(Device/tplink-16mlzma)
+	BOARDNAME := WiFiSong-WS220
+	DEVICE_PROFILE := WIFISONG_WS220
+	TPLINK_HWID := 0x8420002
+endef
+TARGET_DEVICES += wifisong-ws220
+
 define Device/tl-wr941nd-v5
     $(Device/tplink-4mlzma)
     BOARDNAME := TL-WR941ND-v5

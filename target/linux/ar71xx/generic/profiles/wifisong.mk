@@ -15,3 +15,15 @@ define Profile/WIFISONG_WS151/description
 	Package set optimized for the WiFiSong WS151.
 endef
 $(eval $(call Profile,WIFISONG_WS151))
+
+define Profile/WIFISONG_WS220
+	NAME:=WiFiSong WS220
+	PACKAGES:= kmod-usb-core kmod-usb2 kmod-usb-storage \
+			kmod-crypto-deflate kmod-fs-ext4 kmod-ledtrig-gpio \
+			kmod-nls-iso8859-1 e2fsprogs
+endef
+
+define Profile/WIFISONG_WS220/description
+	Package set optimized for the WiFiSong WS220.
+endef
+$(eval $(call Profile,WIFISONG_WS220))

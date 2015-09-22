@@ -928,6 +928,8 @@ ar71xx_board_detect() {
 	*"WiFiSong WS151")
 		name="wifisong-ws151"
 		;;
+	*"WiFiSong WS220")
+		name="wifisong-ws220"
 	esac
 
 	[ -z "$AR71XX_MODEL" ] && [ "${machine:0:8}" = 'TP-LINK ' ] && \

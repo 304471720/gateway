@@ -382,7 +382,8 @@ platform_check_image() {
 		return 0
 		;;
 
-	wifisong-ws151)
+	wifisong-ws151 | \
+	wifisong-ws220)
 		[ "$magic" != "0100" ] && {
 			echo "Invalid image type."
 			return 1
