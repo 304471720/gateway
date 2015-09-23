@@ -1,5 +1,5 @@
 config system
-	option hostname	WS151
+	option hostname	WiFiSong
 	option timezone	CTS-8
 
 config timeserver ntp
