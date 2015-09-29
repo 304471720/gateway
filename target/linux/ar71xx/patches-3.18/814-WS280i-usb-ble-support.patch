@@ -1,0 +1,24 @@
+--- a/arch/mips/include/asm/mach-ath79/irq.h
++++ b/arch/mips/include/asm/mach-ath79/irq.h
+@@ -32,4 +32,11 @@
+ 
+ #include_next <irq.h>
+ 
++//add by QJB,wifisong
++#define ATH79_CPU_IRQ_IP2       (MIPS_CPU_IRQ_BASE + 2)
++#define ATH79_CPU_IRQ_IP3       (MIPS_CPU_IRQ_BASE + 3)
++#define ATH79_CPU_IRQ_USB       ATH79_CPU_IRQ_IP3
++//end
++
++
+ #endif /* __ASM_MACH_ATH79_IRQ_H */
+--- a/arch/mips/ath79/common.h
++++ b/arch/mips/ath79/common.h
+@@ -31,4 +31,7 @@ void ath79_gpio_output_select(unsigned g
+ int ath79_gpio_direction_select(unsigned gpio, bool oe);
+ void ath79_gpio_init(void);
+ 
++void qca953x_gpio_set_value(unsigned gpio, int  value);
++void qca953x_gpio_direction_select(unsigned gpio,int direction);
++
+ #endif /* __ATH79_COMMON_H */

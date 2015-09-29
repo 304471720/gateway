@@ -1,0 +1,207 @@
+--- a/arch/mips/ath79/dev-usb.c
++++ b/arch/mips/ath79/dev-usb.c
+@@ -34,6 +34,24 @@ static struct usb_ehci_pdata ath79_ehci_
+ 	.has_synopsys_hc_bug	= 1,
+ };
+ 
++static u64 ath79_ehci_dmamask = DMA_BIT_MASK(32);
++static struct resource ath79_ehci_resources[2];
++static void __init ath79_usb_init_resource(struct resource res[2],
++                    unsigned long base,
++                    unsigned long size,
++                    int irq)
++{
++    memset(res, 0, sizeof(res));
++
++    res[0].flags = IORESOURCE_MEM;
++    res[0].start = base;
++    res[0].end = base + size - 1;
++
++    res[1].flags = IORESOURCE_IRQ;
++    res[1].start = irq;
++    res[1].end = irq;
++}
++
+ static struct usb_ehci_pdata ath79_ehci_pdata_v2 = {
+ 	.caps_offset		= 0x100,
+ 	.has_tt			= 1,
+@@ -41,6 +59,17 @@ static struct usb_ehci_pdata ath79_ehci_
+ 	.qca_force_16bit_ptw	= 1,
+ };
+ 
++static struct platform_device ath79_ehci_device = {
++    .name		= "ehci-platform",
++    .id		= -1,
++    .resource	= ath79_ehci_resources,
++    .num_resources	= ARRAY_SIZE(ath79_ehci_resources),
++    .dev = {
++        .dma_mask		= &ath79_ehci_dmamask,
++        .coherent_dma_mask	= DMA_BIT_MASK(32),
++    },
++};
++
+ static void __init ath79_usb_register(const char *name, int id,
+ 				      unsigned long base, unsigned long size,
+ 				      int irq, const void *data,
+@@ -285,6 +314,29 @@ static void __init qca956x_usb_setup(voi
+ 			   &ath79_ehci_pdata_v2, sizeof(ath79_ehci_pdata_v2));
+ }
+ 
++static void __init qca953x_usb_setup(void)
++{
++    ath79_device_reset_set(QCA953X_RESET_USBSUS_OVERRIDE);
++    udelay(1000);
++
++    ath79_device_reset_clear(QCA953X_RESET_USB_PHY);
++    udelay(1000);
++
++    ath79_device_reset_clear(QCA953X_RESET_USB_PHY_ANALOG);
++    udelay(1000);
++
++    ath79_device_reset_clear(QCA953X_RESET_USB_HOST);
++    udelay(1000);
++
++    ath79_usb_init_resource(ath79_ehci_resources,
++                QCA953X_EHCI0_BASE, QCA953X_EHCI_SIZE,
++                ATH79_CPU_IRQ_USB);
++
++
++    ath79_ehci_device.dev.platform_data = &ath79_ehci_pdata_v2;
++    platform_device_register(&ath79_ehci_device);
++}
++
+ void __init ath79_register_usb(void)
+ {
+ 	if (soc_is_ar71xx())
+@@ -299,6 +351,8 @@ void __init ath79_register_usb(void)
+ 		ar933x_usb_setup();
+ 	else if (soc_is_ar934x())
+ 		ar934x_usb_setup();
++	else if (soc_is_qca953x())
++		qca953x_usb_setup();
+ 	else if (soc_is_qca955x())
+ 		qca955x_usb_setup();
+ 	else if (soc_is_qca9561())
+--- a/arch/mips/ath79/gpio.c
++++ b/arch/mips/ath79/gpio.c
+@@ -172,7 +172,8 @@ static void __iomem *ath79_gpio_get_func
+ 	    soc_is_ar913x() ||
+ 	    soc_is_ar933x())
+ 		reg = AR71XX_GPIO_REG_FUNC;
+-	else if (soc_is_ar934x() ||
++	else if (soc_is_ar934x()  ||
++		 soc_is_qca953x() ||
+ 		 soc_is_qca956x())
+ 		reg = AR934X_GPIO_REG_FUNC;
+ 	else
+@@ -271,6 +272,26 @@ void __init ath79_gpio_init(void)
+ 		panic("cannot add AR71xx GPIO chip, error=%d", err);
+ }
+ 
++/* direction :0  output  , 1 input   */
++void qca953x_gpio_direction_select(unsigned gpio,int direction){
++	void __iomem *base = ath79_gpio_base;
++
++	if(direction)
++	     __raw_writel(__raw_readl(base + AR71XX_GPIO_REG_OE) |(1 << gpio),
++	     base + AR71XX_GPIO_REG_OE);
++	else
++		__raw_writel(__raw_readl(base + AR71XX_GPIO_REG_OE) & ~(1 << gpio),
++	     base + AR71XX_GPIO_REG_OE);
++
++}
++
++void qca953x_gpio_set_value(unsigned gpio, int  value){
++	if (gpio < ath79_gpio_count)
++		__ath79_gpio_set_value(gpio, value);
++	else
++		__gpio_set_value(gpio, value);
++}
++
+ int gpio_get_value(unsigned gpio)
+ {
+ 	if (gpio < ath79_gpio_count)
+--- a/arch/mips/include/asm/mach-ath79/ar71xx_regs.h
++++ b/arch/mips/include/asm/mach-ath79/ar71xx_regs.h
+@@ -741,6 +741,49 @@
+ 
+ #define QCA956X_REV_ID_REVISION_MASK	0xf
+ 
++/* BEGIN: Added by vicharl,wnc  2014/5/29 */
++#define QCA953X_RESET_USB_PHY_PLL_PWD_EXT BIT(15)
++#define QCA953X_RESET_NANDF		BIT(14)
++#define QCA953X_RESET_GE1_MAC		BIT(13)
++#define QCA953X_RESET_SGMII_ANALOG	BIT(12)
++#define QCA953X_RESET_USB_PHY_ANALOG	BIT(11)
++#define QCA953X_RESET_HOST_DMA_INT	BIT(10)
++#define QCA953X_RESET_GE0_MAC		BIT(9)
++#define QCA953X_RESET_SGMII		BIT(8)
++#define QCA953X_RESET_PCIE_PHY		BIT(7)
++#define QCA953X_RESET_PCIE		BIT(6)
++#define QCA953X_RESET_USB_HOST		BIT(5)
++#define QCA953X_RESET_USB_PHY		BIT(4)
++#define QCA953X_RESET_USBSUS_OVERRIDE	BIT(3)
++#define QCA953X_RESET_LUT		BIT(2)
++#define QCA953X_RESET_MBOX		BIT(1)
++#define QCA953X_RESET_I2S		BIT(0)
++/* END:   Added by vicharl,wnc  2014/5/29 */
++
++/* BEGIN: Added by vicharl,wnc  2014/5/29 */
++#define QCA953X_EHCI0_BASE	0x1b000000
++#define QCA953X_EHCI_SIZE	0x1000
++/* END:   Added by vicharl,wnc  2014/5/29 */
++
++/* BEGIN: Added by vicharl,wnc  2014/5/29 */
++#define QCA953X_RESET_USB_PHY_PLL_PWD_EXT BIT(15)
++#define QCA953X_RESET_NANDF		BIT(14)
++#define QCA953X_RESET_GE1_MAC		BIT(13)
++#define QCA953X_RESET_SGMII_ANALOG	BIT(12)
++#define QCA953X_RESET_USB_PHY_ANALOG	BIT(11)
++#define QCA953X_RESET_HOST_DMA_INT	BIT(10)
++#define QCA953X_RESET_GE0_MAC		BIT(9)
++#define QCA953X_RESET_SGMII		BIT(8)
++#define QCA953X_RESET_PCIE_PHY		BIT(7)
++#define QCA953X_RESET_PCIE		BIT(6)
++#define QCA953X_RESET_USB_HOST		BIT(5)
++#define QCA953X_RESET_USB_PHY		BIT(4)
++#define QCA953X_RESET_USBSUS_OVERRIDE	BIT(3)
++#define QCA953X_RESET_LUT		BIT(2)
++#define QCA953X_RESET_MBOX		BIT(1)
++#define QCA953X_RESET_I2S		BIT(0)
++/* END:   Added by vicharl,wnc  2014/5/29 */
++
+ /*
+  * SPI block
+  */
+--- a/arch/mips/include/asm/mach-ath79/ath79.h
++++ b/arch/mips/include/asm/mach-ath79/ath79.h
+@@ -32,6 +32,8 @@ enum ath79_soc_type {
+ 	ATH79_SOC_AR9341,
+ 	ATH79_SOC_AR9342,
+ 	ATH79_SOC_AR9344,
++	ATH79_SOC_QCA9531,
++	ATH79_SOC_QCA9531_v2,
+ 	ATH79_SOC_QCA9533,
+ 	ATH79_SOC_QCA9556,
+ 	ATH79_SOC_QCA9558,
+@@ -108,9 +110,19 @@ static inline int soc_is_qca9533(void)
+ 	return ath79_soc == ATH79_SOC_QCA9533;
+ }
+ 
++static inline int soc_is_qca9531(void)
++{
++	return ath79_soc == ATH79_SOC_QCA9531;
++}
++
++static inline int soc_is_qca9531_v2(void)
++{
++	return ath79_soc == ATH79_SOC_QCA9531_v2;
++}
++
+ static inline int soc_is_qca953x(void)
+ {
+-	return soc_is_qca9533();
++	return soc_is_qca9533() || soc_is_qca9531() || soc_is_qca9531_v2();
+ }
+ 
+ static inline int soc_is_qca9556(void)
