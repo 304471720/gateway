@@ -1,0 +1,7 @@
+
+config server 'default'
+	option power 'c9'
+	option uuid ''
+	option major ''
+	option minor ''
+

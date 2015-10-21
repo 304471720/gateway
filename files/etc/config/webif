@@ -1,0 +1,22 @@
+
+config webif 'general'
+	option firmware_subtitle 'With X-Wrt Extensions'
+	option firstboot '0'
+	option firmware_name 'OpenWrt ATTITUDE ADJUSTMENT'
+	option firmware_version '12.09'
+	option lang 'zh'
+
+config webif 'theme'
+	option id 'clubman'
+
+config webif 'qos'
+	option show_advanced_rules '0'
+
+config webif 'misc'
+	option opendns '0'
+
+config webif 'wireless'
+
+config webif 'firewall'
+	option log '0'
+

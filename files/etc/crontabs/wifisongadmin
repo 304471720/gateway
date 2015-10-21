@@ -1,0 +1,2 @@
+*/2 * * * *	/usr/lib/wifixi/watchdog
+0   4 * * * reboot

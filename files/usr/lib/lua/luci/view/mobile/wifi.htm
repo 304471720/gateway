@@ -1,0 +1,225 @@
+<%+header%>
+<script type="text/javascript">//<![CDATA[
+var ssid_name = '';
+$(function(){
+    //加载wifi配置信息
+    $.get("<%=luci.dispatcher.build_url("admin", "network", "wireless_status", "radio0.network1")%>",null,function(info){
+        var wifi_info = info[0];
+        
+        if (wifi_info)
+        {
+            var onoff = wifi_info.up?'poweron':'poweroff';
+            /*if(wifi_info.up){
+                $('#wifi_show').css('display','');
+            }else{
+                $('#wifi_show').css('display','none');
+            }*/
+            $("#wifi_onoff").attr("class",onoff);
+            $("#ssid").val(wifi_info.ssid);
+            ssid_name = wifi_info.ssid;
+            $("#channel").val(wifi_info.channel);
+            channel_nu = wifi_info.channel;
+            if(wifi_info.encryption){
+                $('#encryption').val((wifi_info.encryption?'psk+psk2':'none'));
+                $('#wifi_pwd_hide').val(wifi_info.wirekey);
+                $('#wifi_pwd').val(wifi_info.wirekey);
+            }else{
+                $('#encryption').val('none');
+                $('#wifi_pwd_hide').val(wifi_info.wirekey);
+                $('#wifi_pwd_hide').val(wifi_info.encryption);
+            }
+            if( wifi_info.hidden ==1 ){
+                $('#ishidden').attr('checked',true);
+            }
+        }
+            
+    },'json');
+   
+    //绑定下一步按钮点击事件--暂时性的
+    $("#guide_wifi_next").on("click",function(){
+        //提交数据设置
+        var wifi_onoff = $("#wifi_onoff").attr("class");
+        var disabled = wifi_onoff=='poweron'?0:0;
+        var ssid = $("#ssid").val();
+        var channel = $("#channel").val();
+        var ssid_mode = /^\w{2,15}$/;
+        var pwd_mode = /^\w{}$/;
+        var reg = /[\u4E00-\u9FA5]|[\uFE30-\uFFA0]/;
+        var ishidden = 0;
+        var wifi_pwd = $('#wifi_pwd_hide').val();
+        var encryption = $('#encryption').val();
+        $("input[name='ishidden']").each(function(){
+          if ($(this).is(":checked")) {
+                ishidden = 1;
+            }
+        });
+
+        $('#error_msg').html('');
+        if( !ssid_mode.test(ssid) ){
+            $('#error_msg').html('网路名称只允许使用字母,数字和下划线(2-15位)!');
+            return false;
+        }
+        if(encryption!='none'){
+            if ( wifi_pwd.length >20 || wifi_pwd.length<8 ){
+                $('#error_msg').html('密码长度必须在8-20位之间!');
+                return false;
+            }
+            if( reg.test(wifi_pwd) ){
+                $('#error_msg').html('密码不允许使用中文!');
+                return false;
+            }
+        }
+        var data = {
+            ssid :ssid,
+            channel :channel,
+            encryption:encryption,
+            key:wifi_pwd,
+            disabled:disabled,
+            ishidden:ishidden
+        };
+        $.ajax({
+            type:'POST',
+            url :'<%=controller%>/admin/network_zhi/network_cfg?cfg=wifi',
+            data : data,
+            dateType : 'json',
+
+
+        });
+       
+
+        
+    });
+    
+    //绑定开关点击事件
+    $("#wifi_onoff").on("click",function(){
+        var onoff = $(this).attr("class");
+        onoff = onoff == 'poweron' ? 'poweroff' : 'poweron';
+        $(this).attr("class",onoff);
+
+        /*if( onoff =="poweron"){
+            $('#wifi_show').css('display','');
+        }else{
+            $('#wifi_show').css('display','none');
+        }
+
+
+        var wifi_status = onoff=='poweron'?0:1;
+        var out_str = onoff=='poweron'?'开启':'关闭'; 
+        var data = {disabled:wifi_status,ssid:ssid_name};
+        $.ajax({
+            type:'POST',
+            url :'<%=controller%>/admin/network_zhi/network_cfg?cfg=wifi',
+            data : data,
+            dateType : 'json',
+            success : function(rs){
+                $.dialog.list['wifi_msg'].close();
+                if( rs.res == 1 ){
+                    $('#error_msg').html('无线'+out_str+'设置成功！');
+                    //window.location.href='<%=pcdata(luci.dispatcher.build_url("admin","guide_end"))%>';
+                }else{
+                    $('#error_msg').html('无线'+out_str+'设置失败！');
+                    return false;
+                }
+            },
+            error :function(){
+                $.dialog.list['wifi_msg'].close();
+                $('#error_msg').html('数据处理失败！');
+                return false;
+            }
+
+        });*/
+       
+        
+    });
+
+    //显示隐藏密码复选框
+    $(".wifi_pwd_hide_onoff").on("click",function(){
+        //var pwd_type = ($(this).is(":checked")) ?　"text" : "password";
+        //$("#wifi_pwd").attr("type",pwd_type); 此种方式 ie浏览器不支持
+        if($(this).is(":checked")){
+            $("#wifi_pwd").css("display","none");
+            $("#wifi_pwd_hide").css("display","inline");
+        } else {
+            $("#wifi_pwd").css("display","inline");
+            $("#wifi_pwd_hide").css("display","none");
+        }
+    });
+    
+    //密码和隐藏密码绑定change事件
+    $('#wifi_pwd,#wifi_pwd_hide').on("change",function(){
+        var my_wifi_pwd = $(this).val();
+        var sync_pwd_id = ($(this).attr("id")=='wifi_pwd_hide') ? 'wifi_pwd' : 'wifi_pwd_hide';
+        $("#"+sync_pwd_id).val(my_wifi_pwd);
+    });
+    var ref=function(){
+        $('.step .lr').css({
+            'height':$(window).height()
+        });
+    };
+    $(window).resize(function(){
+        ref();
+    });
+    ref();
+});
+
+
+//]]></script>
+
+    <div class="step">
+        <div class="lf">
+            <div class="tit">
+                <h3><em class="ic_dq"></em>无线设置</h3>
+            </div>
+            <div class="sets tbox" style="background: none;">
+                <div class="fl">
+                    <div id="wifi_show" style="display:">
+                        <div class="line mt30">
+                            <span class="t2 f16">SSID</span><input type="text" id="ssid" name="ssid" class="txt1" /> 
+                        </div>
+                        <div class="line mt30">
+                            <span class="t2 f16">信道</span><select id="channel" name="channel" class="sel2" style="margin: 0 10px;">  
+                                    <option value="1" >1 （2.412 GHz）</option>  
+                                    <option value="2" >2 （2.417 GHz）</option>
+                                    <option value="3" >3 （2.422 GHz）</option>
+                                    <option value="4" >4 （2.427 GHz）</option>
+                                    <option value="5" >5 （2.432 GHz）</option>
+                                    <option value="6" >6 （2.437 GHz）</option>
+                                    <option value="7" >7 （2.442 GHz）</option>
+                                    <option value="8" >8 （2.477 GHz）</option>
+                                    <option value="9" >9 （2.452 GHz）</option> 
+                                    <option value="10" >10 （2.457 GHz）</option> 
+                                    <option value="11" >11 （2.462 GHz）</option> 
+                                    <option value="auto">自动</option>  
+                              </select>
+                        </div>
+                        <div class="line mt30">
+                            <span class="t2 f16">加密</span><select id="encryption" name="encryption" class="sel2" style="margin: 0 10px;">  
+                                    <option value="psk+psk2" >WPA/WPA2加密</option>  
+                                <!-- <option value ="wep" >WEP</option>  --> 
+                                <option value="none">不加密</option>  
+                              </select>
+                        </div>
+                        <div class="line mt30">
+                            <span class="t2 f16">密码</span>
+                            <input type="password" class="txt1" id="wifi_pwd" name="wifi_pwd" value="" /> 
+                            <input type="text" class="txt1" id="wifi_pwd_hide" name="wifi_pwd_hide" value="" style="display:none" /> 
+                            <input type="checkbox" id="_r15" class="wifi_pwd_hide_onoff" style="margin: 0 10px;"/><label for="_r15">   显示</label>
+                        </div>
+                    </div>
+                    <div class="line" style="line-height:30px;color:red;padding-left:150px;font-size:15px;"><span id="error_msg" class=""></span></div>
+                    <div class="line mt30">
+		<input class="gbtn" id="guide_wifi_next" type="submit" value="<%:Apply%>" style="float: right"/>
+                                   应用之后请重新搜索连接网络<br/><br/>
+                    </div>
+                </div>
+                
+                </div>
+            </div>
+        </div>
+        <div class="lr">
+            <em class="step2"></em>
+        </div>
+    </div>
+
+<%+footer%>
+
