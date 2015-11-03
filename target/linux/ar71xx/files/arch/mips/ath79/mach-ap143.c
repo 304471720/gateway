@@ -136,8 +136,8 @@ static void __init ap143_setup(void)
 	
 }
 
-
-
 MIPS_MACHINE(ATH79_MACH_AP143, "AP143", "Atheros AP143 reference board",
-	     ap143_setup);
+		ap143_setup);
 
+MIPS_MACHINE(ATH79_MACH_WIFISONG_WS280i, "WiFiSong-WS280i", "WiFiSong WS280i",
+		ap143_setup);

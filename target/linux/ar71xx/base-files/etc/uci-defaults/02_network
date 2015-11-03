@@ -449,7 +449,8 @@ wifisong-ws151)
 	ucidef_add_switch_vlan "switch0" "2" "0t"
 	;;
 
-wifisong-ws220)
+wifisong-ws220 |\
+wifisong-ws280i)
 	ucidef_set_interface_wan "eth0"
 	ucidef_set_interface_lan "eth1.1"
 	ucidef_set_interface_wifi "eth1.2"

@@ -27,3 +27,14 @@ define Profile/WIFISONG_WS220/description
 	Package set optimized for the WiFiSong WS220.
 endef
 $(eval $(call Profile,WIFISONG_WS220))
+
+define Profile/WIFISONG_WS280i
+	NAME:=WiFiSong WS280i
+	PACKAGES:=kmod-usb-core kmod-usb2 kmod-usb-storage 
+endef 
+
+define Profile/WIFISONG_WS280i/Description 
+	Package set optimized for the WiFiSong WS280i
+endef 
+
+$(eval $(call Profile,WIFISONG_WS280i)) 
