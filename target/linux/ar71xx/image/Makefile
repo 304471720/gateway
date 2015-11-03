@@ -1876,6 +1876,7 @@ $(eval $(call SingleProfile,AthLzma,64k,AP136_010,ap136-010,AP136-010,ttyS0,1152
 $(eval $(call SingleProfile,AthLzma,64k,AP136_020,ap136-020,AP136-020,ttyS0,115200,$$(ap136_mtdlayout),RKuImage))
 $(eval $(call SingleProfile,AthLzma,64k,AP143_8M,ap143-8M,AP143,ttyS0,115200,$$(ap143_mtdlayout_8M),RKuImage)) 
 $(eval $(call SingleProfile,AthLzma,64k,AP143_16M,ap143-16M,AP143,ttyS0,115200,$$(ap143_mtdlayout_16M),RKuImage))
+$(eval $(call SingleProfile,AthLzma,64k,WIFISONG_WS280i,wifisong-ws280i,WiFiSong-WS280i,ttyS0,115200,$$(ap143_mtdlayout_16M),RKuImage))
 $(eval $(call SingleProfile,AthLzma,64k,BXU2000N2,bxu2000n-2-a1,BXU2000n-2-A1,ttyS0,115200,$$(bxu2000n2_mtdlayout),RKuImage))
 $(eval $(call SingleProfile,AthLzma,64k,CAP4200AG,cap4200ag,CAP4200AG,ttyS0,115200,$$(cap4200ag_mtdlayout),KRuImage))
 $(eval $(call SingleProfile,AthLzma,64k,DB120,db120,DB120,ttyS0,115200,$$(db120_mtdlayout),RKuImage))
