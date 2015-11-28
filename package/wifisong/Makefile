@@ -14,7 +14,7 @@ PKG_RELEASE:=19
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=git@bitbucket.org:zhiwifi/wifisong.git
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_RELEASE)
-PKG_SOURCE_VERSION:=4cbaf6c07ac78f437b4a9bfc0f0c41310e301ed5
+PKG_SOURCE_VERSION:=fdf42bce8a80889fb806f7075da3ce64af2e8753
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)-$(PKG_RELEASE)
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_RELEASE).tar.gz
@@ -28,7 +28,7 @@ include $(INCLUDE_DIR)/kernel.mk
 define Package/wifisong
   SECTION:=base
   CATEGORY:=Network
-  DEPENDS:=+libpthread +libstdcpp +tcpdump +netcat +screen
+  DEPENDS:=+libpthread +libstdcpp +tcpdump +netcat +screen +curl
   DEFAULT:=y
   TITLE:=WiFiSong utility
   #DESCRIPTION:=This variable is obsolete. use the Package/name/description define instead!

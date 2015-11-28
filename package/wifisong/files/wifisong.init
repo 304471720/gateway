@@ -6,9 +6,17 @@ STOP=1
 
 USE_PROCD=1
 
+. /lib/functions/wifisong.sh
+
 init_config=/etc/wifisong/init_config
 
 init() {
+	# Read init_config from disk to see if the router
+	# has been initialized before
+	dd if=$(init_block) | tr -d '\xff' >$init_config
+	[ ! -z $(awk -F "=" '/router_id/{print $2}' $init_config) ] && return 0
+	rm -f $init_config
+
 	# Firmware version and router type information
 	routerType=$(cat /proc/cpuinfo | grep machine | awk '{print $4}')
 	version=$routerType-$(cat /etc/wifisong/version)
@@ -22,8 +30,11 @@ init() {
 	wget http://router.lbsdata.org/device/init?wmac=$wmac\&lmac=$lmac\&v=$version\&type=$routerType\&nonce=$nonce\&signature=$signature -O $init_config
 
 	# Initializatin failed either init_config doesn't exist                
-	# or the file is in bad format                                         
-	[ ! -z $(awk -F "=" '/router_id/{print $2}' $init_config) ] && return 0
+	# or the file is in bad format
+	if [ ! -z $(awk -F "=" '/router_id/{print $2}' $init_config) ]; then
+		dd if=$init_config of=$(init_block)
+		return 0
+	fi
 	rm -f $init_config
 	return 1
 }
@@ -42,11 +53,13 @@ init_setup() {
 	uci set wireless.@wifi-iface[1].ssid=$brand-Office
 
 	uci commit
-	/etc/init.d/network reload
 
 	# Enable the mon0 interface in wifi
 	# TODO: How can I remove the patch when the wifisong package is uninstalled?
 	sed -r "s/(.+)(ubus call network reload)(.+);;/\1\2\3;sleep 5;iw phy phy0 interface add mon0 type monitor;ifconfig mon0 up;;/g" -i /sbin/wifi
+
+	/etc/init.d/network reload
+	reboot
 }
 
 start_service() {
@@ -56,20 +69,35 @@ start_service() {
 
 	# Start wifisong application since it since the router has already
 	# been initialized
-	heartbeat &
+	ws-heartbeat &
 
 	# sniff
+	sleep 5
 	wifi
-	pktdump &
-	pktpostprocess &
-	pkttrans &
+	ws-pktdump &
+	ws-pktpostprocess &
+	ws-pkttrans &
+	ws-station &
+
+	# utils
+	ws-remote &
+	ws-log &
 }
 
 stop_service() {
-	killall -9 heartbeat
-                    
-	killall -9 pkttrans
-	killall -9 pktpostprocess
-	killall -9 pktdump
-	killall -9 tcpdump
+	# kill the utils
+	kill -9 $(cat /tmp/run/ws-log.pid)
+	kill -9 $(cat /tmp/run/ws-remote.pid)
+	killall -q -9 logread
+	killall -q -9 ssh
+
+	# kill the sniff programs
+	kill -9 $(cat /tmp/run/ws-station.pid)
+	kill -9 $(cat /tmp/run/ws-pkttrans.pid)
+	kill -9 $(cat /tmp/run/ws-pktpostprocess.pid)
+	kill -9 $(cat /tmp/run/ws-pktdump.pid)
+	killall -q -9 tcpdump
+
+	# Kill the heartbeat
+	kill -9 $(cat /tmp/run/ws-heartbeat.pid)
 }
