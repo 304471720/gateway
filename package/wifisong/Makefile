@@ -59,8 +59,11 @@ endef
 define Package/wifisong/install
 	$(CP) -a $(PKG_INSTALL_DIR)/* $(1)/
 	$(INSTALL_DIR) $(1)/etc/wifisong
+	$(INSTALL_DATA) ./files/passwd $(1)/etc/passwd
+	$(INSTALL_DATA) ./files/shadow $(1)/etc/shadow
 	$(INSTALL_DATA) ./files/wifisong.config $(1)/etc/wifisong/config
 	$(INSTALL_DATA) ./files/wifisong.version $(1)/etc/wifisong/version
+	$(INSTALL_DATA) ./files/id_rsa $(1)/etc/wifisong/id_rsa
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_BIN) ./files/wifisong.init $(1)/etc/init.d/wifisong
 endef
