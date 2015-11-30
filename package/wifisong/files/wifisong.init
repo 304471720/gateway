@@ -52,6 +52,13 @@ init_setup() {
 	uci set wireless.@wifi-iface[0].ssid=$brand-$phymac
 	uci set wireless.@wifi-iface[1].ssid=$brand-Office
 
+	# Webadmin configuration
+	luCI_port=$(awk -F '=' '/luCI_port/{print $2}' $init_config)
+	uci set uhttpd.main.listen_http=0.0.0.0:$luCI_port
+	router_password=$(awk -F '=' '/router_password/{print $2}' $init_config)
+	echo -e "$router_password\n$router_password" | passwd webadmin
+
+	# Commit the initial configuration
 	uci commit
 
 	# Enable the mon0 interface in wifi
