@@ -1,0 +1,28 @@
+#!/bin/sh
+#
+# Copyright (C) 2011 OpenWrt.org
+#
+
+[ -e /etc/config/ibeacon ] && exit 0
+
+. /lib/functions/uci-defaults.sh
+. /lib/ar71xx.sh
+
+board=$(ar71xx_board_name)
+
+case "$board" in
+
+wifisong-ws280i |\
+wifisong-ws286i)
+	touch /etc/config/ibeacon
+
+	uci set ibeacon.default=server
+	uci set ibeacon.default.power=c9
+	;;
+*)
+	;;
+esac
+
+uci commit ibeacon
+
+exit 0
