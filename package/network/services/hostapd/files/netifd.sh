@@ -447,7 +447,7 @@ hostapd_set_log_options() {
 	local log_level log_80211 log_8021x log_radius log_wpa log_driver log_iapp log_mlme
 	json_get_vars log_level log_80211 log_8021x log_radius log_wpa log_driver log_iapp log_mlme
 
-	set_default log_level 2
+	set_default log_level 0
 	set_default log_80211  1
 	set_default log_8021x  1
 	set_default log_radius 1
