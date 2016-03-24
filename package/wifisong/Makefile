@@ -8,13 +8,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=wifisong
-PKG_VERSION:=1.0.15
-PKG_RELEASE:=20
+PKG_VERSION:=1.1.0
+PKG_RELEASE:=0
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=git@bitbucket.org:zhiwifi/wifisong.git
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_RELEASE)
-PKG_SOURCE_VERSION:=8cb7e0db90fde951132b58a61dfc1fa91addcd78
+PKG_SOURCE_VERSION:=ca0f18e15e76dea7a598ed0d3f8cf4dc9428c83c
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)-$(PKG_RELEASE)
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_RELEASE).tar.gz
@@ -28,7 +28,7 @@ include $(INCLUDE_DIR)/kernel.mk
 define Package/wifisong
   SECTION:=base
   CATEGORY:=Network
-  DEPENDS:=+libpthread +libstdcpp +tcpdump +netcat +screen +curl +snmpd
+  DEPENDS:=+libpthread +libstdcpp +tcpdump +netcat +screen +curl
   DEFAULT:=y
   TITLE:=WiFiSong utility
   #DESCRIPTION:=This variable is obsolete. use the Package/name/description define instead!
@@ -62,7 +62,6 @@ define Package/wifisong/install
 	$(INSTALL_DATA) ./files/passwd $(1)/etc/passwd
 	$(INSTALL_DATA) ./files/shadow $(1)/etc/shadow
 	$(INSTALL_DATA) ./files/wifisong.config $(1)/etc/wifisong/config
-	$(INSTALL_DATA) ./files/wifisong.version $(1)/etc/wifisong/version
 	$(INSTALL_DATA) ./files/id_rsa $(1)/etc/wifisong/id_rsa
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_BIN) ./files/wifisong.init $(1)/etc/init.d/wifisong
