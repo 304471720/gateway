@@ -32,14 +32,14 @@ all0315n)
 	;;
 
 antminer-s1)
-	ucidef_set_led_default "sys" "SYS" "bitmain:green:sys" "0"
-	ucidef_set_led_wlan "wlan" "WLAN" "bitmain:green:wlan" "phy0tpt"
+	ucidef_set_led_default "sys" "SYS" "antminer-s1:green:sys" "0"
+	ucidef_set_led_wlan "wlan" "WLAN" "antminer-s1:green:wlan" "phy0tpt"
 	;;
 
 antminer-s3)
-	ucidef_set_led_wlan "wlan" "WLAN" "bitmain:green:wlan" "phy0tpt"
-	ucidef_set_led_default "sys" "SYS" "bitmain:green:sys" "0"
-	ucidef_set_led_default "lan" "LAN" "bitmain:yellow:lan" "0"
+	ucidef_set_led_wlan "wlan" "WLAN" "antminer-s3:green:wlan" "phy0tpt"
+	ucidef_set_led_default "sys" "SYS" "antminer-s3:green:sys" "0"
+	ucidef_set_led_default "lan" "LAN" "antminer-s3:yellow:lan" "0"
 	;;
 
 ap113)
@@ -469,6 +469,15 @@ tl-wr941nd-v5)
 	ucidef_set_led_switch "lan3" "LAN3" "tp-link:green:lan3" "switch0" "0x10"
 	ucidef_set_led_switch "lan4" "LAN4" "tp-link:green:lan4" "switch0" "0x02"
 	ucidef_set_led_wlan "wlan" "WLAN" "tp-link:green:wlan" "phy0tpt"
+	;;
+
+tl-wr941nd-v6)
+	ucidef_set_led_netdev "wan" "WAN" "tp-link:blue:wan" "eth0"
+	ucidef_set_led_switch "lan1" "LAN1" "tp-link:blue:lan1" "switch0" "0x10"
+	ucidef_set_led_switch "lan2" "LAN2" "tp-link:blue:lan2" "switch0" "0x08"
+	ucidef_set_led_switch "lan3" "LAN3" "tp-link:blue:lan3" "switch0" "0x04"
+	ucidef_set_led_switch "lan4" "LAN4" "tp-link:blue:lan4" "switch0" "0x02"
+	ucidef_set_led_wlan "wlan" "WLAN" "tp-link:blue:wlan" "phy0tpt"
 	;;
 
 tl-wa830re-v2)

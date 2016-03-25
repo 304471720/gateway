@@ -248,7 +248,8 @@ platform_check_image() {
 	nbg460n_550n_550nh | \
 	unifi | \
 	unifi-outdoor | \
-	carambola2 )
+	carambola2 | \
+	weio )
 		[ "$magic" != "2705" ] && {
 			echo "Invalid image type."
 			return 1
@@ -312,6 +313,7 @@ platform_check_image() {
 	el-mini | \
 	gl-inet | \
 	mc-mac1200r | \
+	minibox-v1 |\
 	onion-omega | \
 	oolite | \
 	smart-300 | \
@@ -352,6 +354,7 @@ platform_check_image() {
 	tl-wr842n-v2 | \
 	tl-wr941nd | \
 	tl-wr941nd-v5 | \
+	tl-wr941nd-v6 | \
 	tl-wr1041n-v2 | \
 	tl-wr1043nd | \
 	tl-wr1043nd-v2 | \
@@ -455,13 +458,20 @@ platform_check_image() {
 		fi
 		return 0
 		;;
-    wnr2000-v4)
+	wnr2000-v4)
 		[ "$magic_long" != "32303034" ] && {
 			echo "Invalid image type."
 			return 1
 		}
 		return 0
 		;;
+	wnr2200)
+                [ "$magic_long" != "32323030" ] && {
+                        echo "Invalid image type."
+                        return 1
+                }
+                return 0
+                ;;
 
 	esac
 

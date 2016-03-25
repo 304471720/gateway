@@ -1,10 +1,11 @@
 --- a/arch/mips/ath79/machtypes.h
 +++ b/arch/mips/ath79/machtypes.h
-@@ -16,22 +16,198 @@
+@@ -16,22 +16,201 @@
  
  enum ath79_mach_type {
  	ATH79_MACH_GENERIC = 0,
 +	ATH79_MACH_ALFA_AP96,		/* ALFA Network AP96 board */
++	ATH79_MACH_ALFA_AP120C,		/* ALFA Network AP120C board */
 +	ATH79_MACH_ALFA_NX,		/* ALFA Network N2/N5 board */
 +	ATH79_MACH_ALL0258N,		/* Allnet ALL0258N */
 +	ATH79_MACH_ALL0305,		/* Allnet ALL0305 */
@@ -150,6 +151,7 @@
 +	ATH79_MACH_WIFISONG_WS220,	/* WIFISONG WS220 */
 +	ATH79_MACH_TL_WR941ND,		/* TP-LINK TL-WR941ND */
 +	ATH79_MACH_TL_WR941ND_V5,	/* TP-LINK TL-WR941ND v5 */
++	ATH79_MACH_TL_WR941ND_V6,	/* TP-LINK TL-WR941ND v6 */
 +	ATH79_MACH_TUBE2H,		/* Alfa Network Tube2H */
 +	ATH79_MACH_UBNT_AIRGW,		/* Ubiquiti AirGateway */
  	ATH79_MACH_UBNT_AIRROUTER,	/* Ubiquiti AirRouter */
@@ -167,6 +169,7 @@
  	ATH79_MACH_UBNT_UNIFI_OUTDOOR,	/* Ubiquiti UnifiAP Outdoor */
 +	ATH79_MACH_UBNT_UNIFI_OUTDOOR_PLUS, /* Ubiquiti UnifiAP Outdoor+ */
  	ATH79_MACH_UBNT_XM,		/* Ubiquiti Networks XM board rev 1.0 */
++	ATH79_MACH_WEIO,			/* WeIO board */
 +	ATH79_MACH_WHR_G301N,		/* Buffalo WHR-G301N */
 +	ATH79_MACH_WHR_HP_G300N,	/* Buffalo WHR-HP-G300N */
 +	ATH79_MACH_WHR_HP_GN,		/* Buffalo WHR-HP-GN */
@@ -201,7 +204,7 @@
  #endif /* _ATH79_MACHTYPE_H */
 --- a/arch/mips/ath79/Kconfig
 +++ b/arch/mips/ath79/Kconfig
-@@ -2,6 +2,70 @@ if ATH79
+@@ -2,6 +2,79 @@ if ATH79
  
  menu "Atheros AR71XX/AR724X/AR913X machine selection"
  
@@ -212,6 +215,15 @@
 +	select ATH79_DEV_GPIO_BUTTONS
 +	select ATH79_DEV_M25P80
 +	select ATH79_DEV_USB
++
++config ATH79_MACH_ALFA_AP120C
++	bool "ALFA Network AP120C board support"
++	select SOC_AR71XX
++	select ATH79_DEV_AP9X_PCI if PCI
++	select ATH79_DEV_ETH
++	select ATH79_DEV_GPIO_BUTTONS
++	select ATH79_DEV_M25P80
++	select ATH79_DEV_WMAC
 +
 +config ATH79_MACH_HORNET_UB
 +	bool "ALFA Network Hornet-UB board support"
@@ -272,7 +284,7 @@
  config ATH79_MACH_AP121
  	bool "Atheros AP121 reference board"
  	select SOC_AR933X
-@@ -11,62 +75,1061 @@ config ATH79_MACH_AP121
+@@ -11,62 +84,1070 @@ config ATH79_MACH_AP121
  	select ATH79_DEV_M25P80
  	select ATH79_DEV_USB
  	select ATH79_DEV_WMAC
@@ -1267,6 +1279,15 @@
 +	select ATH79_DEV_M25P80
 +	select ATH79_DEV_WMAC
 +
++config ATH79_MACH_TL_WR941ND_V6
++	bool "TP-LINK TL-WR941ND v6 support"
++	select SOC_QCA956X
++	select ATH79_DEV_ETH
++	select ATH79_DEV_GPIO_BUTTONS
++	select ATH79_DEV_LEDS_GPIO
++	select ATH79_DEV_M25P80
++	select ATH79_DEV_WMAC
++
 +config ATH79_MACH_TL_WR1041N_V2
 +	bool "TP-LINK TL-WR1041N v2 support"
 +	select SOC_AR934X
@@ -1362,10 +1383,19 @@
  
  config ATH79_MACH_UBNT_XM
  	bool "Ubiquiti Networks XM/UniFi boards"
-@@ -83,6 +1126,97 @@ config ATH79_MACH_UBNT_XM
+@@ -83,6 +1144,106 @@ config ATH79_MACH_UBNT_XM
  	  Say 'Y' here if you want your kernel to support the
  	  Ubiquiti Networks XM (rev 1.0) board.
  
++config ATH79_MACH_WEIO
++	bool "WeIO board"
++	select SOC_AR933X
++	select ATH79_DEV_GPIO_BUTTONS
++	select ATH79_DEV_LEDS_GPIO
++	select ATH79_DEV_M25P80
++	select ATH79_DEV_USB
++	select ATH79_DEV_WMAC
++
 +config ATH79_MACH_MYNET_N600
 +	bool "WD My Net N600 board support"
 +	select SOC_AR934X
@@ -1460,7 +1490,7 @@
  endmenu
  
  config SOC_AR71XX
-@@ -124,7 +1258,10 @@ config ATH79_DEV_DSA
+@@ -124,7 +1285,10 @@ config ATH79_DEV_DSA
  config ATH79_DEV_ETH
  	def_bool n
  
@@ -1472,7 +1502,7 @@
  	def_bool n
  
  config ATH79_DEV_GPIO_BUTTONS
-@@ -154,6 +1291,11 @@ config ATH79_PCI_ATH9K_FIXUP
+@@ -154,6 +1318,11 @@ config ATH79_PCI_ATH9K_FIXUP
  	def_bool n
  
  config ATH79_ROUTERBOOT
@@ -1486,11 +1516,12 @@
  endif
 --- a/arch/mips/ath79/Makefile
 +++ b/arch/mips/ath79/Makefile
-@@ -38,9 +38,125 @@ obj-$(CONFIG_ATH79_ROUTERBOOT)		+= route
+@@ -38,9 +38,128 @@ obj-$(CONFIG_ATH79_ROUTERBOOT)		+= route
  #
  # Machines
  #
 +obj-$(CONFIG_ATH79_MACH_ALFA_AP96)	+= mach-alfa-ap96.o
++obj-$(CONFIG_ATH79_MACH_ALFA_AP120C)	+= mach-alfa-ap120c.o
 +obj-$(CONFIG_ATH79_MACH_ALFA_NX)	+= mach-alfa-nx.o
 +obj-$(CONFIG_ATH79_MACH_ALL0258N)	+= mach-all0258n.o
 +obj-$(CONFIG_ATH79_MACH_ALL0315N)	+= mach-all0315n.o
@@ -1578,6 +1609,7 @@
 +obj-$(CONFIG_ATH79_MACH_TL_WR841N_V8)	+= mach-tl-wr841n-v8.o
 +obj-$(CONFIG_ATH79_MACH_TL_WR841N_V9)	+= mach-tl-wr841n-v9.o
 +obj-$(CONFIG_ATH79_MACH_TL_WR941ND)	+= mach-tl-wr941nd.o
++obj-$(CONFIG_ATH79_MACH_TL_WR941ND_V6)	+= mach-tl-wr941nd-v6.o
 +obj-$(CONFIG_ATH79_MACH_TL_WR1041N_V2)	+= mach-tl-wr1041n-v2.o
 +obj-$(CONFIG_ATH79_MACH_TL_WR1043ND)	+= mach-tl-wr1043nd.o
 +obj-$(CONFIG_ATH79_MACH_TL_WR1043ND_V2)	+= mach-tl-wr1043nd-v2.o
@@ -1587,6 +1619,7 @@
 +obj-$(CONFIG_ATH79_MACH_TUBE2H)		+= mach-tube2h.o
 +obj-$(CONFIG_ATH79_MACH_UBNT)		+= mach-ubnt.o
  obj-$(CONFIG_ATH79_MACH_UBNT_XM)	+= mach-ubnt-xm.o
++obj-$(CONFIG_ATH79_MACH_WEIO)		+= mach-weio.o
 +obj-$(CONFIG_ATH79_MACH_WHR_HP_G300N)	+= mach-whr-hp-g300n.o
 +obj-$(CONFIG_ATH79_MACH_WLAE_AG300N)	+= mach-wlae-ag300n.o
 +obj-$(CONFIG_ATH79_MACH_WLR8100)	+= mach-wlr8100.o

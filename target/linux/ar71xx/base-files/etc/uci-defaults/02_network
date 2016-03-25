@@ -226,6 +226,7 @@ tl-mr3420-v2 |\
 tl-wr841n-v8 |\
 tl-wr842n-v2 |\
 tl-wr941nd-v5 |\
+tl-wr941nd-v6 |\
 wnr2000-v3 |\
 wnr2000-v4 |\
 wnr2200 |\
@@ -321,7 +322,10 @@ dlan-pro-1200-ac)
 	ucidef_add_switch_vlan "switch0" "0" "0 2 3 4"
 	;;
 
+alfa-ap120c |\
 all0305 |\
+antminer-s1 |\
+antminer-s3 |\
 aw-nr580 |\
 bullet-m |\
 cap4200ag |\
@@ -366,8 +370,6 @@ wp543)
 	ucidef_set_interface_lan "eth0"
 	;;
 
-antminer-s1 |\
-antminer-s3 |\
 dir-505-a1)
 	ucidef_set_interface_lan "eth1"
 	;;
@@ -416,6 +418,7 @@ dir-615-e4 |\
 hiwifi-hc6361 |\
 ja76pf |\
 mc-mac1200r|\
+minibox-v1 |\
 mynet-n600 |\
 oolite |\
 qihoo-c301 |\
@@ -423,6 +426,7 @@ rb-750 |\
 rb-751 |\
 tew-632brp |\
 tew-712br |\
+tew-732br |\
 tl-mr3220 |\
 tl-mr3220-v2 |\
 tl-mr3420 |\

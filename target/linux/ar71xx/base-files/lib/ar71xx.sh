@@ -37,8 +37,9 @@ wndr3700_board_detect() {
 		machine="NETGEAR WNDR3700"
 		;;
 	"33373031")
-		# Use awk to remove everything after the first zero byte
-		model="$(ar71xx_get_mtd_offset_size_format art 41 32 %c | awk 'BEGIN{FS="[[:cntrl:]]"} {print $1; exit}')"
+		model="$(ar71xx_get_mtd_offset_size_format art 41 32 %c)"
+		# Use awk to remove everything unprintable
+		model_stripped="$(ar71xx_get_mtd_offset_size_format art 41 32 %c | LC_CTYPE=C awk -v 'FS=[^[:print:]]' '{print $1; exit}')"
 		case $model in
 		$'\xff'*)
 			if [ "${model:24:1}" = 'N' ]; then
@@ -48,14 +49,14 @@ wndr3700_board_detect() {
 			fi
 			;;
 		'29763654+16+64'*)
-			machine="NETGEAR ${model:14}"
+			machine="NETGEAR ${model_stripped:14}"
 			;;
 		'29763654+16+128'*)
-			machine="NETGEAR ${model:15}"
+			machine="NETGEAR ${model_stripped:15}"
 			;;
 		*)
 			# Unknown ID
-			machine="NETGEAR $model"
+			machine="NETGEAR ${model_stripped}"
 		esac
 	esac
 
@@ -107,11 +108,11 @@ tplink_board_detect() {
 	"015300"*)
 		model="EasyLink EL-MINI"
 		;;
-	"04440001"*)
-		model="BITMAIN ANTMINER S1"
+	"044401"*)
+		model="ANTMINER-S1"
 		;;
-	"04440003"*)
-		model="BITMAIN ANTMINER S3"
+	"044403"*)
+		model="ANTMINER-S3"
 		;;
 	"120000"*)
 		model="MERCURY MAC1200R"
@@ -119,7 +120,10 @@ tplink_board_detect() {
 	"3C0001"*)
 		model="OOLITE"
 		;;
-	"070300"*)
+	"3C0002"*)
+		model="MINIBOX_V1"
+		;;
+	"070301"*)
 		model="TP-Link TL-WR703N"
 		;;
 	"071000"*)
@@ -329,6 +333,9 @@ ar71xx_board_detect() {
 	*"ALFA Network AP96")
 		name="alfa-ap96"
 		;;
+	*"ALFA Network AP120C")
+		name="alfa-ap120c"
+		;;
 	*"ALFA Network N2/N5")
 		name="alfa-nx"
 		;;
@@ -340,6 +347,12 @@ ar71xx_board_detect() {
 		;;
 	*ALL0315N)
 		name="all0315n"
+		;;
+	*Antminer-S1)
+		name="antminer-s1"
+		;;
+	*Antminer-S3)
+		name="antminer-s3"
 		;;
 	*AP113)
 		name="ap113"
@@ -495,6 +508,9 @@ ar71xx_board_detect() {
 		;;
 	*"MAC1200R")
 		name="mc-mac1200r"
+		;;
+	*"MiniBox V1.0")
+		name="minibox-v1"
 		;;
 	*MR12)
 		name="mr12"
@@ -790,6 +806,9 @@ ar71xx_board_detect() {
 	*"TL-WR941N/ND v5")
 		name="tl-wr941nd-v5"
 		;;
+	*"TL-WR941N/ND v6")
+		name="tl-wr941nd-v6"
+		;;
 	*"TL-WR703N v1")
 		name="tl-wr703n"
 		;;
@@ -819,6 +838,9 @@ ar71xx_board_detect() {
 		;;
 	*"UniFi AP Pro")
 		name="uap-pro"
+		;;
+	"WeIO"*)
+		name="weio"
 		;;
 	*WHR-G301N)
 		name="whr-g301n"
