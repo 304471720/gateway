@@ -1,99 +1,5 @@
---- a/arch/mips/ath79/dev-usb.c
-+++ b/arch/mips/ath79/dev-usb.c
-@@ -34,6 +34,24 @@ static struct usb_ehci_pdata ath79_ehci_
- 	.has_synopsys_hc_bug	= 1,
- };
- 
-+static u64 ath79_ehci_dmamask = DMA_BIT_MASK(32);
-+static struct resource ath79_ehci_resources[2];
-+static void __init ath79_usb_init_resource(struct resource res[2],
-+                    unsigned long base,
-+                    unsigned long size,
-+                    int irq)
-+{
-+    memset(res, 0, sizeof(res));
-+
-+    res[0].flags = IORESOURCE_MEM;
-+    res[0].start = base;
-+    res[0].end = base + size - 1;
-+
-+    res[1].flags = IORESOURCE_IRQ;
-+    res[1].start = irq;
-+    res[1].end = irq;
-+}
-+
- static struct usb_ehci_pdata ath79_ehci_pdata_v2 = {
- 	.caps_offset		= 0x100,
- 	.has_tt			= 1,
-@@ -41,6 +59,17 @@ static struct usb_ehci_pdata ath79_ehci_
- 	.qca_force_16bit_ptw	= 1,
- };
- 
-+static struct platform_device ath79_ehci_device = {
-+    .name		= "ehci-platform",
-+    .id		= -1,
-+    .resource	= ath79_ehci_resources,
-+    .num_resources	= ARRAY_SIZE(ath79_ehci_resources),
-+    .dev = {
-+        .dma_mask		= &ath79_ehci_dmamask,
-+        .coherent_dma_mask	= DMA_BIT_MASK(32),
-+    },
-+};
-+
- static void __init ath79_usb_register(const char *name, int id,
- 				      unsigned long base, unsigned long size,
- 				      int irq, const void *data,
-@@ -285,6 +314,29 @@ static void __init qca956x_usb_setup(voi
- 			   &ath79_ehci_pdata_v2, sizeof(ath79_ehci_pdata_v2));
- }
- 
-+static void __init qca953x_usb_setup(void)
-+{
-+    ath79_device_reset_set(QCA953X_RESET_USBSUS_OVERRIDE);
-+    udelay(1000);
-+
-+    ath79_device_reset_clear(QCA953X_RESET_USB_PHY);
-+    udelay(1000);
-+
-+    ath79_device_reset_clear(QCA953X_RESET_USB_PHY_ANALOG);
-+    udelay(1000);
-+
-+    ath79_device_reset_clear(QCA953X_RESET_USB_HOST);
-+    udelay(1000);
-+
-+    ath79_usb_init_resource(ath79_ehci_resources,
-+                QCA953X_EHCI0_BASE, QCA953X_EHCI_SIZE,
-+                ATH79_CPU_IRQ_USB);
-+
-+
-+    ath79_ehci_device.dev.platform_data = &ath79_ehci_pdata_v2;
-+    platform_device_register(&ath79_ehci_device);
-+}
-+
- void __init ath79_register_usb(void)
- {
- 	if (soc_is_ar71xx())
-@@ -299,6 +351,8 @@ void __init ath79_register_usb(void)
- 		ar933x_usb_setup();
- 	else if (soc_is_ar934x())
- 		ar934x_usb_setup();
-+	else if (soc_is_qca953x())
-+		qca953x_usb_setup();
- 	else if (soc_is_qca955x())
- 		qca955x_usb_setup();
- 	else if (soc_is_qca9561())
 --- a/arch/mips/ath79/gpio.c
 +++ b/arch/mips/ath79/gpio.c
-@@ -172,7 +172,8 @@ static void __iomem *ath79_gpio_get_func
- 	    soc_is_ar913x() ||
- 	    soc_is_ar933x())
- 		reg = AR71XX_GPIO_REG_FUNC;
--	else if (soc_is_ar934x() ||
-+	else if (soc_is_ar934x()  ||
-+		 soc_is_qca953x() ||
- 		 soc_is_qca956x())
- 		reg = AR934X_GPIO_REG_FUNC;
- 	else
 @@ -271,6 +272,26 @@ void __init ath79_gpio_init(void)
  		panic("cannot add AR71xx GPIO chip, error=%d", err);
  }
@@ -148,7 +54,7 @@
 +
 +/* BEGIN: Added by vicharl,wnc  2014/5/29 */
 +#define QCA953X_EHCI0_BASE	0x1b000000
-+#define QCA953X_EHCI_SIZE	0x1000
++//#define QCA953X_EHCI_SIZE	0x1000
 +/* END:   Added by vicharl,wnc  2014/5/29 */
 +
 +/* BEGIN: Added by vicharl,wnc  2014/5/29 */

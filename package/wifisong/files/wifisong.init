@@ -4,16 +4,14 @@
 START=99
 STOP=1
 
-USE_PROCD=1
-
 . /lib/functions/wifisong.sh
 
 init_config=/etc/init_config
 
 init() {
 	# Firmware version and router type information
-	routerType=$(cat /proc/cpuinfo | grep machine | awk '{print $4}')
-	version=$routerType-$(cat /etc/wifisong/version)
+	routerType=$(routerType)
+	version=$(routerTypeVersion)
 
 	# Derive the initial configuration from server
 	wmac=$(cat /sys/class/net/eth1/address)
