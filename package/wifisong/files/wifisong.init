@@ -13,6 +13,16 @@ init() {
 	routerType=$(routerType)
 	version=$(routerTypeVersion)
 
+	# Check if init_config exist in the barn
+	read_mtd_block_barn $init_config
+
+	# Initializatin failed either init_config doesn't exist
+	# or the file is in bad format
+	if [ -f $init_config ] && [ $(tail -1 $init_config) == $(sed '$s/.*/61F7B04E443C4F6FA08CD027DF5AC638/' $init_config | md5sum | awk {'print $1'}) ]; then
+		return 0
+	fi
+	rm -f $init_config
+
 	# Derive the initial configuration from server
 	wmac=$(cat /sys/class/net/eth1/address)
 	lmac=$(cat /sys/class/net/eth0/address)
@@ -23,10 +33,12 @@ init() {
 
 	# Initializatin failed either init_config doesn't exist                
 	# or the file is in bad format
-	if [ ! -z $(awk -F "=" '/router_id/{print $2}' $init_config) ]; then
+	if [ -f $init_config ] && [ $(tail -1 $init_config) == $(sed '$s/.*/61F7B04E443C4F6FA08CD027DF5AC638/' $init_config | md5sum | awk {'print $1'}) ]; then
+		write_mtd_block_barn $init_config
 		return 0
 	fi
 	rm -f $init_config
+
 	return 1
 }
 

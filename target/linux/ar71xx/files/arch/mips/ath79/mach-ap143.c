@@ -44,6 +44,8 @@
 #define AP143_GPIO_LED_LAN3		14
 #define AP143_GPIO_LED_LAN4		11
 
+#define WS286i_GPIO_BTN_JUMPSTART_SW    17
+
 #define AP143_GPIO_BTN_WPS		17
 
 #define AP143_KEYS_POLL_INTERVAL	20	/* msecs */
@@ -77,6 +79,17 @@ static struct gpio_keys_button ap143_gpio_keys[] __initdata = {
 	},
 };
 
+static struct gpio_keys_button ws286i_gpio_keys[] __initdata = {
+    {
+        .desc        = "restart button",
+        .type        = EV_KEY,
+        .code        = KEY_RESTART,
+        .debounce_interval = AP143_KEYS_DEBOUNCE_INTERVAL,
+        .gpio        = WS286i_GPIO_BTN_JUMPSTART_SW,
+        .active_low  = 1,
+    },
+};
+
 static void __init ap143_gpio_led_setup(void)
 {
 	ath79_gpio_direction_select(AP143_GPIO_LED_WAN, true);
@@ -101,6 +114,32 @@ static void __init ap143_gpio_led_setup(void)
 	ath79_register_gpio_keys_polled(-1, AP143_KEYS_POLL_INTERVAL,
 			ARRAY_SIZE(ap143_gpio_keys),
 			ap143_gpio_keys);
+}
+
+static void __init ws286i_gpio_led_setup(void)
+{
+	ath79_gpio_direction_select(AP143_GPIO_LED_WAN, true);
+	ath79_gpio_direction_select(AP143_GPIO_LED_LAN1, true);
+	ath79_gpio_direction_select(AP143_GPIO_LED_LAN2, true);
+	ath79_gpio_direction_select(AP143_GPIO_LED_LAN3, true);
+	ath79_gpio_direction_select(AP143_GPIO_LED_LAN4, true);
+
+	ath79_gpio_output_select(AP143_GPIO_LED_WAN,
+			QCA953X_GPIO_OUT_MUX_LED_LINK5);
+	ath79_gpio_output_select(AP143_GPIO_LED_LAN1,
+			QCA953X_GPIO_OUT_MUX_LED_LINK1);
+	ath79_gpio_output_select(AP143_GPIO_LED_LAN2,
+			QCA953X_GPIO_OUT_MUX_LED_LINK2);
+	ath79_gpio_output_select(AP143_GPIO_LED_LAN3,
+			QCA953X_GPIO_OUT_MUX_LED_LINK3);
+	ath79_gpio_output_select(AP143_GPIO_LED_LAN4,
+			QCA953X_GPIO_OUT_MUX_LED_LINK4);
+
+	ath79_register_leds_gpio(-1, ARRAY_SIZE(ap143_leds_gpio),
+			ap143_leds_gpio);
+	ath79_register_gpio_keys_polled(1, AP143_KEYS_POLL_INTERVAL,
+			ARRAY_SIZE(ws286i_gpio_keys),
+			ws286i_gpio_keys);
 }
 
 static void __init ap143_setup(void)
@@ -179,7 +218,7 @@ static void __init ws286i_setup(void)
 
 	ath79_register_m25p80(NULL);
 
-	ap143_gpio_led_setup();
+	ws286i_gpio_led_setup();
 
 	ath79_register_usb();
 
