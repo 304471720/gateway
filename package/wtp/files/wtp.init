@@ -7,8 +7,12 @@ STOP=1
 wtp_config=/etc/wtp/config
 
 init() {
-    sed -r -e "s/^routerId=.+/routerId=$(routerId)/" -e t -e "1 i\routerId=$(routerId)" -i $wtp_config
-    sed -r -e "s/^secret=.+/secret=$(share_secret)/" -e t -e "2 i\secret=$(share_secret)" -i $wtp_config
+    sed -r -e "s/^routerId=.*/routerId=$(routerId)/" -e t -e "1 i\routerId=$(routerId)" -i $wtp_config
+    if [ -z $(share_secret) ]; then
+        sed -r -e "s/^secret=.*/secret=cd24ece3f7fd4ba3ab406810ee1f4151/" -e t -e "2 i\secret=cd24ece3f7fd4ba3ab406810ee1f4151" -i $wtp_config
+    else
+        sed -r -e "s/^secret=.*/secret=$(share_secret)/" -e t -e "2 i\secret=$(share_secret)" -i $wtp_config
+    fi
 }
 
 start() {
