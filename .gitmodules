@@ -1,0 +1,3 @@
+[submodule "feeds/packages"]
+	path = feeds/packages
+	url = git@bitbucket.org:zhiwifi/openwrt_packages.git
