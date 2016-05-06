@@ -1,6 +1,6 @@
 --- a/arch/mips/ath79/machtypes.h
 +++ b/arch/mips/ath79/machtypes.h
-@@ -16,22 +16,201 @@
+@@ -16,22 +16,203 @@
  
  enum ath79_mach_type {
  	ATH79_MACH_GENERIC = 0,
@@ -146,8 +146,10 @@
 +	ATH79_MACH_TL_WR841N_V1,	/* TP-LINK TL-WR841N v1 */
 +	ATH79_MACH_TL_WR841N_V7,	/* TP-LINK TL-WR841N/ND v7 */
 +	ATH79_MACH_TL_WR841N_V8,	/* TP-LINK TL-WR841N/ND v8 */
++	ATH79_MACH_WIFISONG_WS230,	/* WIFISONG WS230 */
 +	ATH79_MACH_TL_WR841N_V9,	/* TP-LINK TL-WR841N/ND v9 */
 +	ATH79_MACH_TL_WR842N_V2,	/* TP-LINK TL-WR842N/ND v2 */
++	ATH79_MACH_WIFISONG_WS215,	/* WIFISONG WS215 */
 +	ATH79_MACH_WIFISONG_WS220,	/* WIFISONG WS220 */
 +	ATH79_MACH_TL_WR941ND,		/* TP-LINK TL-WR941ND */
 +	ATH79_MACH_TL_WR941ND_V5,	/* TP-LINK TL-WR941ND v5 */
@@ -284,7 +286,7 @@
  config ATH79_MACH_AP121
  	bool "Atheros AP121 reference board"
  	select SOC_AR933X
-@@ -11,62 +84,1070 @@ config ATH79_MACH_AP121
+@@ -11,62 +84,1090 @@ config ATH79_MACH_AP121
  	select ATH79_DEV_M25P80
  	select ATH79_DEV_USB
  	select ATH79_DEV_WMAC
@@ -1250,6 +1252,16 @@
 +	select ATH79_DEV_USB
 +	select ATH79_DEV_WMAC
 +
++config ATH79_MACH_WIFISONG_WS230
++	bool "WIFISONG WS230 support"
++	select SOC_AR934X
++	select ATH79_DEV_ETH
++	select ATH79_DEV_GPIO_BUTTONS
++	select ATH79_DEV_LEDS_GPIO
++	select ATH79_DEV_M25P80
++	select ATH79_DEV_USB
++	select ATH79_DEV_WMAC
++
 +config ATH79_MACH_TL_WR841N_V9
 +       bool "TP-LINK TL-WR841N/ND v9 support"
 +       select SOC_QCA953X
@@ -1258,6 +1270,16 @@
 +       select ATH79_DEV_LEDS_GPIO
 +       select ATH79_DEV_M25P80
 +       select ATH79_DEV_WMAC
++
++config ATH79_MACH_WIFISONG_WS215
++	bool "WIFISONG WS215 support"
++	select SOC_AR934X
++	select ATH79_DEV_ETH
++	select ATH79_DEV_GPIO_BUTTONS
++	select ATH79_DEV_LEDS_GPIO
++	select ATH79_DEV_M25P80
++	select ATH79_DEV_USB
++	select ATH79_DEV_WMAC
 +
 +config ATH79_MACH_WIFISONG_WS220
 +	bool "WIFISONG WS220 support"

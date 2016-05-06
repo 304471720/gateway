@@ -956,6 +956,12 @@ ar71xx_board_detect() {
 	*"WiFiSong WS151")
 		name="wifisong-ws151"
 		;;
+	*"WiFiSong WS230")
+		name="wifisong-ws230"
+		;;
+	*"WiFiSong WS215")
+		name="wifisong-ws215"
+		;;
 	*"WiFiSong WS220")
 		name="wifisong-ws220"
 		;;

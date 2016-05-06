@@ -303,9 +303,22 @@ static void __init tl_wr841n_v8_setup(void)
 					tl_wr841n_v8_gpio_keys);
 }
 
+static void __init wifisong_ws230_setup(void)
+{
+	ws_ap123_setup();
+
+	ath79_register_leds_gpio(-1, ARRAY_SIZE(tl_wr841n_v8_leds_gpio) - 1,
+				 tl_wr841n_v8_leds_gpio);
+
+	ath79_register_gpio_keys_polled(1, TL_WR841NV8_KEYS_POLL_INTERVAL,
+					ARRAY_SIZE(tl_wr841n_v8_gpio_keys),
+					tl_wr841n_v8_gpio_keys);
+}
+
 MIPS_MACHINE(ATH79_MACH_TL_WR841N_V8, "TL-WR841N-v8", "TP-LINK TL-WR841N/ND v8",
 	     tl_wr841n_v8_setup);
-
+MIPS_MACHINE(ATH79_MACH_WIFISONG_WS230, "WiFiSong-WS230", "WiFiSong WS230",
+	     wifisong_ws230_setup);
 
 static void __init tl_wr842n_v2_setup(void)
 {
@@ -346,6 +359,8 @@ static void __init wifisong_ws220_setup(void)
 	ath79_register_usb();
 }
 
+MIPS_MACHINE(ATH79_MACH_WIFISONG_WS215, "WiFiSong-WS215", "WiFiSong WS215",
+			wifisong_ws220_setup);
 MIPS_MACHINE(ATH79_MACH_WIFISONG_WS220, "WiFiSong-WS220", "WiFiSong WS220",
 			wifisong_ws220_setup);
 

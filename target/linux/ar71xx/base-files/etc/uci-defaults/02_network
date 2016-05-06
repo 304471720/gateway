@@ -453,7 +453,9 @@ wifisong-ws151)
 	ucidef_add_switch_vlan "switch0" "2" "0t"
 	;;
 
+wifisong-ws215 |\
 wifisong-ws220 |\
+wifisong-ws230 |\
 wifisong-ws280i |\
 wifisong-ws286i)
 	ucidef_set_interface_wan "eth0"
