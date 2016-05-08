@@ -1,0 +1,8 @@
+#!/bin/sh
+
+[ "$ACTION" == "ifup" ] || exit 0
+
+[ "$INTERFACE" = "wan" ] && {
+	logger -t firewall "Reloading wifisong due to $ACTION of $INTERFACE ($DEVICE)"
+	/etc/init.d/wifisong restart
+}

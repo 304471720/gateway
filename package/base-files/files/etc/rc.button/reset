@@ -11,9 +11,15 @@ then
 	echo "REBOOT" > /dev/console
 	sync
 	reboot
-elif [ "$SEEN" -gt 5 ]
+elif [ "$SEEN" -gt 5 ] && [ "$SEEN" -le 15 ]
 then
 	echo "FACTORY RESET" > /dev/console
+	jffs2reset -y && reboot &
+elif [ "$SEEN" -gt 30 ]
+then
+	echo "FACTORY RESET and ERASE BARN MTDBLOCK" > /dev/console
+	idx=$(awk -F ": | " '/barn/{print $1}' /proc/mtd | sed -r 's/mtd([0-9]+)/\1/')
+	[ ! -z $idx ] && dd if=/dev/zero of=/dev/mtdblock$idx
 	jffs2reset -y && reboot &
 fi
 

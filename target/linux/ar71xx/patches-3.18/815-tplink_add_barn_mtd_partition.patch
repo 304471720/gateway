@@ -1,0 +1,68 @@
+--- a/drivers/mtd/tplinkpart.c
++++ b/drivers/mtd/tplinkpart.c
+@@ -16,10 +16,11 @@
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/partitions.h>
+ 
+-#define TPLINK_NUM_PARTS	5
++#define TPLINK_NUM_PARTS	6
+ #define TPLINK_HEADER_V1	0x01000000
+ #define MD5SUM_LEN		16
+ 
++#define TPLINK_BARN_LEN		0x10000 /*Added by sunzh@20160506*/
+ #define TPLINK_ART_LEN		0x10000
+ #define TPLINK_KERNEL_OFFS	0x20000
+ 
+@@ -106,6 +107,7 @@ static int tplink_check_rootfs_magic(struct mtd_info *mtd, size_t offset)
+ 	return 0;
+ }
+ 
++/*Modified by sunzh@20160506:Add barn partition*/
+ static int tplink_parse_partitions(struct mtd_info *master,
+ 				   struct mtd_partition **pparts,
+ 				   struct mtd_part_parser_data *data)
+@@ -114,6 +116,7 @@ static int tplink_parse_partitions(struct mtd_info *master,
+ 	struct tplink_fw_header *header;
+ 	int nr_parts;
+ 	size_t offset;
++	size_t barn_offset;
+ 	size_t art_offset;
+ 	size_t rootfs_offset;
+ 	size_t squashfs_offset;
+@@ -144,6 +147,7 @@ static int tplink_parse_partitions(struct mtd_info *master,
+ 	else
+ 		rootfs_offset = offset + be32_to_cpu(header->rootfs_ofs);
+ 
++	barn_offset = master->size - TPLINK_BARN_LEN - TPLINK_ART_LEN;
+ 	art_offset = master->size - TPLINK_ART_LEN;
+ 
+ 	parts[0].name = "u-boot";
+@@ -157,16 +161,20 @@ static int tplink_parse_partitions(struct mtd_info *master,
+ 
+ 	parts[2].name = "rootfs";
+ 	parts[2].offset = rootfs_offset;
+-	parts[2].size = art_offset - rootfs_offset;
++	parts[2].size = barn_offset - rootfs_offset;
+ 
+-	parts[3].name = "art";
+-	parts[3].offset = art_offset;
+-	parts[3].size = TPLINK_ART_LEN;
+-	parts[3].mask_flags = MTD_WRITEABLE;
++	parts[3].name = "barn";
++	parts[3].offset = barn_offset;
++	parts[3].size = TPLINK_BARN_LEN;
+ 
+-	parts[4].name = "firmware";
+-	parts[4].offset = offset;
+-	parts[4].size = art_offset - offset;
++	parts[4].name = "art";
++	parts[4].offset = art_offset;
++	parts[4].size = TPLINK_ART_LEN;
++	parts[4].mask_flags = MTD_WRITEABLE;
++
++	parts[5].name = "firmware";
++	parts[5].offset = offset;
++	parts[5].size = barn_offset - offset;
+ 
+ 	vfree(header);
+ 

@@ -63,6 +63,8 @@ define Package/wifisong/install
 	$(INSTALL_DATA) ./files/shadow $(1)/etc/shadow
 	$(INSTALL_DATA) ./files/wifisong.config $(1)/etc/wifisong/config
 	$(INSTALL_DATA) ./files/id_rsa $(1)/etc/wifisong/id_rsa
+	$(INSTALL_DIR) $(1)/etc/hotplug.d/iface
+	$(INSTALL_DATA) ./files/wifisong.hotplug $(1)/etc/hotplug.d/iface/35-wifisong
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_BIN) ./files/wifisong.init $(1)/etc/init.d/wifisong
 endef
