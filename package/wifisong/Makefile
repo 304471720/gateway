@@ -8,13 +8,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=wifisong
-PKG_VERSION:=1.1.0
+PKG_VERSION:=1.1.1
 PKG_RELEASE:=0
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=git@bitbucket.org:zhiwifi/wifisong.git
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_RELEASE)
-PKG_SOURCE_VERSION:=36a7d4fd1c7e905fa9686c8592bc11c2897e177d
+PKG_SOURCE_VERSION:=8b44dffd691afd186d4e1a2b93104668841e8d8b
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)-$(PKG_RELEASE)
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_RELEASE).tar.gz
@@ -59,14 +59,15 @@ endef
 define Package/wifisong/install
 	$(CP) -a $(PKG_INSTALL_DIR)/* $(1)/
 	$(INSTALL_DIR) $(1)/etc/wifisong
+	$(INSTALL_DIR) $(1)/etc/config
 	$(INSTALL_DATA) ./files/passwd $(1)/etc/passwd
 	$(INSTALL_DATA) ./files/shadow $(1)/etc/shadow
 	$(INSTALL_DATA) ./files/wifisong.config $(1)/etc/wifisong/config
+	$(INSTALL_DATA) ./files/ap_roaming.config $(1)/etc/config/ap_roaming
 	$(INSTALL_DATA) ./files/id_rsa $(1)/etc/wifisong/id_rsa
-	$(INSTALL_DIR) $(1)/etc/hotplug.d/iface
-	$(INSTALL_DATA) ./files/wifisong.hotplug $(1)/etc/hotplug.d/iface/35-wifisong
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_BIN) ./files/wifisong.init $(1)/etc/init.d/wifisong
+	$(INSTALL_BIN) ./files/ap_roaming.init $(1)/etc/init.d/ap_roaming
 endef
 
 define Package/wifisong/postinst

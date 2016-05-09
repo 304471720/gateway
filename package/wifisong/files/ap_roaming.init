@@ -1,0 +1,28 @@
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2015 wifisong.com
+START=99
+STOP=1
+
+USE_PROCD=1
+
+threshold=`uci get ap_roaming.ap.threshold`
+expire_time=`uci get ap_roaming.ap.expire_time`
+interval=`uci get ap_roaming.ap.interval`
+enable=`uci get ap_roaming.ap.enable`
+#interface=`uci get ap_roaming.ap.interface`
+
+start_service() {
+#	printf("usage: ap_roaming \$interval \$threshold \$expire_time")
+#	ap_roaming $interval $threshold $expire_time $interface &
+	sleep 30 # delay some seconds to wireless enable
+	if [ "$enable" == "1" ];then
+		ifconfig | grep wlan | awk '{print $1}' | while read interface
+		do
+			ap_roaming $interval $threshold $expire_time $interface &
+		done
+	fi
+}
+
+stop_service() {
+	killall ap_roaming &
+}
