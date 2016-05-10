@@ -52,6 +52,14 @@ ucidef_set_interface_lan() {
 	json_select ..
 }
 
+ucidef_set_interface_wifi() {
+        local wifi_if=$1    
+		                                
+        json_select_object network           
+        _ucidef_set_interface wifi $wifi_if                            
+        json_select ..                   
+}
+
 ucidef_set_interfaces_lan_wan() {
 	local lan_if=$1
 	local wan_if=$2
