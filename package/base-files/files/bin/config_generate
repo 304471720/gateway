@@ -34,6 +34,7 @@ generate_network() {
 	[ "$create_vlan" -eq 1 ] && case $1 in
 	lan) vlan=1;;
 	wan) vlan=2;;
+	wifi) vlan=3;;
 	*)
 		vlan=$next_vlan
 		next_vlan=$((next_vlan + 1))
@@ -60,10 +61,18 @@ EOF
 		;;
 	wan) uci -q batch <<EOF
 set network.$1.proto='dhcp'
-delete network.wan6
-set network.wan6='interface'
-set network.wan6.ifname='$ifname'
-set network.wan6.proto='dhcpv6'
+#delete network.wan6
+#set network.wan6='interface'
+#set network.wan6.ifname='$ifname'
+#set network.wan6.proto='dhcpv6'
+EOF
+		;;
+	wifi) uci -q batch <<EOF
+set network.$1.type='bridge'
+set network.$1.proto='static'
+set network.$1.ipaddr='192.168.19.1'
+set network.$1.netmask='255.255.255.0'
+set network.$1.ip6assign='60'
 EOF
 		;;
 	esac
