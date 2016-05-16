@@ -5,8 +5,8 @@
 # See /LICENSE for more information.
 #
 
-define Profile/PBR-M1
-	NAME:=PBR-M1 Device
+define Profile/ws720
+	NAME:=ws720 Device
 	PACKAGES:=\
 		kmod-usb-core kmod-usb3 kmod-usb-hid kmod-sdhci-mt7620 \
 		kmod-ledtrig-usbdev kmod-ata-core kmod-ata-ahci \
@@ -16,7 +16,7 @@ endef
 
 FEATURES+=rtc
 
-define Profile/PBR-M1/Description
+define Profile/ws720/Description
 	Default package set compatible with most boards.
 endef
-$(eval $(call Profile,PBR-M1))
+$(eval $(call Profile,ws720))

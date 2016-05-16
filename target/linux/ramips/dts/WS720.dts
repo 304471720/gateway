@@ -4,7 +4,7 @@
 
 / {
 	compatible = "mediatek,mt7621-eval-board", "mediatek,mt7621-soc";
-	model = "PBR-M1";
+	model = "WS720";
 
 	memory@0 {
 		device_type = "memory";
@@ -107,22 +107,22 @@
 		compatible = "gpio-leds";
 
 		buzzer {
-			label = "pbr-m1:buzzer";
+			label = "ws720:buzzer";
 			gpios = <&gpio0 27 1>;
 		};
 
 		power {
-			label = "pbr-m1:green:power";
+			label = "ws720:green:power";
 			gpios = <&gpio0 25 1>;
 		};
 
 		sys {
-			label = "pbr-m1:green:sys";
+			label = "ws720:green:sys";
 			gpios = <&gpio0 24 1>;
 		};
 
 		internet {
-			label = "pbr-m1:green:internet";
+			label = "ws720:green:internet";
 			gpios = <&gpio0 23 1>;
 		};
 	};
