@@ -29,7 +29,7 @@ config WPA_RFKILL_SUPPORT
 
 config WPA_MSG_MIN_PRIORITY
 	int "Minimum debug message priority"
-	default 3
+	default 0
 	help
 	  Useful values are:
 	    0 = all messages

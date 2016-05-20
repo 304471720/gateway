@@ -92,7 +92,7 @@ endef
 define KernelPackage/mac80211
   $(call KernelPackage/mac80211/Default)
   TITLE:=Linux 802.11 Wireless Networking Stack
-  DEPENDS+= +kmod-cfg80211 +hostapd-common +kmod-crypto-core +kmod-crypto-arc4
+  DEPENDS+= +kmod-cfg80211 +hostapd-common +hostapd-utils +kmod-crypto-core +kmod-crypto-arc4 +wpa-cli
   KCONFIG:=\
 	CONFIG_AVERAGE=y
   FILES:= $(PKG_BUILD_DIR)/net/mac80211/mac80211.ko
