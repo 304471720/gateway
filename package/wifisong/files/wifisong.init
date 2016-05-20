@@ -24,8 +24,10 @@ init() {
 	rm -f $init_config
 
 	# Derive the initial configuration from server
-	wmac=$(cat /sys/class/net/eth1/address)
-	lmac=$(cat /sys/class/net/eth0/address)
+	lan=$(uci get network.lan.ifname)
+	wan=$(uci get network.wan.ifname)
+	wmac=$(cat /sys/class/net/$wan/address)
+	lmac=$(cat /sys/class/net/$lan/address)
 	nonce=$(date | md5sum | sed -r 's/([0-9a-zA-Z]+) (.+)/\1/')
 	signature=$( (echo -n $nonce; echo -n "61F7B04E443C4F6FA08CD027DF5AC638") | \
 		md5sum | sed -r 's/([0-9a-zA-Z]+) (.+)/\1/' )

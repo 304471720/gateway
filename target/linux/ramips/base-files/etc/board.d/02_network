@@ -134,7 +134,6 @@ ramips_setup_interfaces()
 	dir-320-b1 | \
 	dir-615-h1 | \
 	firewrt | \
-	pbr-m1 | \
 	hlk-rm04 | \
 	mt7621 | \
 	mt7628 | \
@@ -147,12 +146,22 @@ ramips_setup_interfaces()
 	wt1520 | \
 	xiaomi-miwifi-mini |\
 	y1|\
+	pbr-m1 |\
 	zbt-wg2626)
 		ucidef_set_interfaces_lan_wan "eth0.1" "eth0.2"
 		ucidef_add_switch "switch0" "1" "1"
 		ucidef_add_switch_vlan "switch0" "1" "0 1 2 3 6t"
 		ucidef_add_switch_vlan "switch0" "2" "4 6t"
 		;;
+
+	ws720)                                                
+                ucidef_set_interfaces_lan_wan "eth0.1" "eth0.2"  
+                ucidef_set_interface_wifi "eth0.3"               
+                ucidef_add_switch "switch0" "1" "1"              
+                ucidef_add_switch_vlan "switch0" "1" "0 6t"      
+                ucidef_add_switch_vlan "switch0" "2" "4 6t"      
+                ucidef_add_switch_vlan "switch0" "3" "1 2 3 6t"  
+                ;;
 
 	whr-1166d)
 		ucidef_set_interfaces_lan_wan "eth0.1" "eth0.2"
@@ -285,6 +294,7 @@ ramips_setup_macs()
 	local board="$1"
 	local lan_mac=""
 	local wan_mac=""
+	local wifi_mac=""
 
 	case $board in
 	br-6475nd)
@@ -389,12 +399,14 @@ ramips_setup_macs()
 	*)
 		lan_mac=$(cat /sys/class/net/eth0/address)
 		wan_mac=$(macaddr_add "$lan_mac" 1)
+		wifi_mac=$(macaddr_add "$wan_mac" 1)
 		;;
 
 	esac
 
 	[ -n "$lan_mac" ] && ucidef_set_interface_macaddr lan $lan_mac
 	[ -n "$wan_mac" ] && ucidef_set_interface_macaddr wan $wan_mac
+	[ -n "$wifi_mac" ] && ucidef_set_interface_macaddr wifi $wifi_mac
 }
 
 board_config_update
