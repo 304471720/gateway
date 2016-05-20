@@ -21,5 +21,13 @@ start() {
 }
 
 stop() {
-    killall -9 wtp
+    local pid
+    for pid in `pidof wtp`
+      do
+        [ ${pid} -eq $$ ] && {
+          continue
+        }
+
+        kill -KILL ${pid}
+      done
 }
