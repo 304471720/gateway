@@ -84,12 +84,14 @@ start() {
 	ws-heartbeat &
 
 	# sniff
-	sleep 5
-	wifi
-	ws-pktdump &
-	ws-pktpostprocess &
-	ws-pkttrans &
-	ws-station &
+	if [ -f /etc/config/wireless ];then
+		sleep 5
+		wifi
+		ws-pktdump &
+		ws-pktpostprocess &
+		ws-pkttrans &
+		ws-station &
+	fi
 
 	# utils
 	ws-remote &
