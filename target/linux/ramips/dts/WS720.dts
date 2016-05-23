@@ -51,7 +51,12 @@
 
 				partition@50000 {
 					label = "firmware";
-					reg = <0x50000 0xfb0000>;
+					reg = <0x50000 0xfa0000>;
+				};
+
+				partition@ff0000 {
+					label = "barn";
+					reg = <0xff0000 0x10000>;
 				};
 
 			};
@@ -100,7 +105,7 @@
 	};
 
 	ethernet@1e100000 {
-		mtd-mac-address = <&factory 0xe000>;
+		mtd-mac-address = <&factory 0x28>;
 	};
 
 	gpio-leds {
