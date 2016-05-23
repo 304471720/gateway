@@ -60,6 +60,7 @@ define Package/wifisong/install
 	$(CP) -a $(PKG_INSTALL_DIR)/* $(1)/
 	$(INSTALL_DIR) $(1)/etc/wifisong
 	$(INSTALL_DIR) $(1)/etc/config
+	$(INSTALL_DIR) $(1)/etc/hotplug.d/button
 	$(INSTALL_DATA) ./files/passwd $(1)/etc/passwd
 	$(INSTALL_DATA) ./files/shadow $(1)/etc/shadow
 	$(INSTALL_DATA) ./files/wifisong.config $(1)/etc/wifisong/config
@@ -68,6 +69,7 @@ define Package/wifisong/install
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_BIN) ./files/wifisong.init $(1)/etc/init.d/wifisong
 	$(INSTALL_BIN) ./files/ap_roaming.init $(1)/etc/init.d/ap_roaming
+	$(INSTALL_BIN) ./files/hotplug_button.config $(1)/etc/hotplug.d/button/00-button
 endef
 
 define Package/wifisong/postinst
