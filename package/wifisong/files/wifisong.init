@@ -66,10 +66,6 @@ init_setup() {
 	# Commit the initial configuration
 	uci commit
 
-	# Enable the mon0 interface in wifi
-	# TODO: How can I remove the patch when the wifisong package is uninstalled?
-	sed -r "s/(.+)(ubus call network reload)(.+);;/\1\2\3;sleep 5;iw phy phy0 interface add mon0 type monitor;ifconfig mon0 up;;/g" -i /sbin/wifi
-
 	/etc/init.d/network reload
 	reboot
 }
@@ -77,6 +73,15 @@ init_setup() {
 start() {
 	if [ ! -f $init_config ]; then
 		init && init_setup
+	fi
+
+	# Enable the mon0 interface in wifi
+	# TODO: How can I remove the patch when the wifisong package is uninstalled?
+	if [ -f /sbin/wifi ]; then
+		mon0_up=$(awk -F: '/iw phy phy0 interface add mon0 type monitor/' /sbin/wifi)
+		if [ -z "$mon0_up" ]; then
+			sed -r "s/(.+)(ubus call network reload)(.+);;/\1\2\3;sleep 5;iw phy phy0 interface add mon0 type monitor;ifconfig mon0 up;;/g" -i /sbin/wifi
+		fi
 	fi
 
 	# Start wifisong application since it since the router has already
