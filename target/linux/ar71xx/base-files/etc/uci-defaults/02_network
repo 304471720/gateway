@@ -445,8 +445,7 @@ wzr-hp-ag300h)
 	;;
 
 wifisong-ws151)
-	ucidef_set_interface_wan "eth1" "$board"
-	ucidef_set_interface_lan "eth0.1"
+	ucidef_set_interfaces_lan_wan "eth0.1" "eth1"
 	ucidef_set_interface_wifi "eth0.2"
 	ucidef_add_switch "switch0" "1" "1"
 	ucidef_add_switch_vlan "switch0" "1" "0t 1 2 3 4"
@@ -458,8 +457,7 @@ wifisong-ws220 |\
 wifisong-ws230 |\
 wifisong-ws280i |\
 wifisong-ws286i)
-	ucidef_set_interface_wan "eth0" "$board"
-	ucidef_set_interface_lan "eth1.1"
+	ucidef_set_interfaces_lan_wan "eth1.1" "eth0"
 	ucidef_set_interface_wifi "eth1.2"
 	ucidef_add_switch "switch0" "1" "1"
 	ucidef_add_switch_vlan "switch0" "1" "0t 1 2 3 4"

@@ -56,7 +56,7 @@ platform_check_image() {
 	freestation5 | \
 	firewrt |\
 	pbr-m1 |\
-	ws720 |\
+	wifisong-ws720 |\
 	hg255d | \
 	hlk-rm04 | \
 	ht-tm02 | \

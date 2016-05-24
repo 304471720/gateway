@@ -956,7 +956,7 @@ endif
 #
 
 ifeq ($(SUBTARGET),mt7621)
-  TARGET_DEVICES += mt7621 wsr-600 wsr-1166 dir-860l-b1 firewrt pbr-m1 ws720 re6500 zbt-wg2626
+  TARGET_DEVICES += mt7621 wsr-600 wsr-1166 dir-860l-b1 firewrt pbr-m1 wifisong-ws720 re6500 zbt-wg2626
 endif
 
 define Device/mt7621
@@ -1002,7 +1002,7 @@ define Device/pbr-m1
   IMAGE_SIZE := $(ralink_default_fw_size_16M)
 endef
 
-define Device/ws720
+define Device/wifisong-ws720
   DTS := WS720
   IMAGE_SIZE := $(ralink_default_fw_size_16M)
 endef

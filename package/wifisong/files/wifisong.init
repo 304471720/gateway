@@ -84,6 +84,13 @@ start() {
 		fi
 	fi
 
+  # Set the board name as the dhcp hostname of wan when get the IP address
+  if [ -f /tmp/sysinfo/board_name ];then
+    name=$(cat /tmp/sysinfo/board_name)
+    uci set network.wan.hostname=$name
+    uci commit
+  fi
+
 	# Start wifisong application since it since the router has already
 	# been initialized
 	ws-heartbeat &

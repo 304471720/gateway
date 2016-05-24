@@ -259,8 +259,8 @@ ramips_board_detect() {
 	*"PBR-M1")
 		name="pbr-m1"
 		;;
-	*"WS720")
-		name="ws720"
+	*"WiFiSong WS720")
+		name="wifisong-ws720"
 		;;
 	*"Petatel PSR-680W"*)
 		name="psr-680w"
