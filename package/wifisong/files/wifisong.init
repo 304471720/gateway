@@ -70,6 +70,37 @@ init_setup() {
 	reboot
 }
 
+set_dhcp_hostname() {
+
+	dhcp_hostname=$(uci get network.wan.hostname)
+	if [ -n "$dhcp_hostname" ];then
+		echo "dhcp_hostname is exist:$dhcp_hostname"
+		return 0
+	fi
+
+	# Set the board name as the default dhcp hostname of wan when get the IP address
+	if [ -f /tmp/sysinfo/board_name ];then
+		name=$(cat /tmp/sysinfo/board_name)
+		uci set network.wan.hostname=$name
+		uci commit
+	fi
+}
+
+set_system_hostname() {
+
+	system_hostname=$(uci get system.@system[0].hostname)
+	if [ -n "$system_hostname" ];then
+		return 0
+  fi
+
+	# Set the board name as the default system hostname
+	if [ -f /tmp/sysinfo/board_name ];then
+		name=$(cat /tmp/sysinfo/board_name)
+		uci set system.@system[0].hostname=$name
+		uci commit
+	fi
+}
+
 start() {
 	if [ ! -f $init_config ]; then
 		init && init_setup
@@ -84,12 +115,8 @@ start() {
 		fi
 	fi
 
-  # Set the board name as the dhcp hostname of wan when get the IP address
-  if [ -f /tmp/sysinfo/board_name ];then
-    name=$(cat /tmp/sysinfo/board_name)
-    uci set network.wan.hostname=$name
-    uci commit
-  fi
+	set_dhcp_hostname
+	set_system_hostname
 
 	# Start wifisong application since it since the router has already
 	# been initialized
