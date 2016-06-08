@@ -52,7 +52,7 @@ $(eval $(call Profile,WIFISONG_WS220))
 
 define Profile/WIFISONG_WS280i
 	NAME:=WiFiSong WS280i
-	PACKAGES:=kmod-usb-core kmod-usb2 kmod-usb-storage
+	PACKAGES:=kmod-usb-core kmod-usb2 kmod-usb-storage kmod-bluetooth bluez-utils
 endef
 
 define Profile/WIFISONG_WS280i/Description
@@ -63,7 +63,7 @@ $(eval $(call Profile,WIFISONG_WS280i))
 
 define Profile/WIFISONG_WS286i
 	NAME:=WiFiSong WS286i
-	PACKAGES:=kmod-usb-core kmod-usb2 kmod-usb-storage
+	PACKAGES:=kmod-usb-core kmod-usb2 kmod-usb-storage kmod-bluetooth bluez-utils
 endef
 
 define Profile/WIFISONG_WS286i/Description

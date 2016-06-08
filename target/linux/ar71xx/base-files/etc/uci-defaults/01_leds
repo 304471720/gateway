@@ -462,6 +462,12 @@ wifisong-ws230)
 	ucidef_set_led_netdev "system" "SYSTEM" "tp-link:green:system" "eth1"
 	;;
 
+ap143 |\
+wifisong-ws280i |\
+wifisong-ws286i)
+	ucidef_set_led_netdev "wan" "WAN" "ap143:green:wan" "eth0"
+	;;
+
 tl-wr841n-v8 | \
 tl-wr941nd-v5)
 	ucidef_set_led_netdev "wan" "WAN" "tp-link:green:wan" "eth0"
