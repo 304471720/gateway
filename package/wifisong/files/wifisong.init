@@ -90,8 +90,9 @@ set_system_hostname() {
 
 	system_hostname=$(uci get system.@system[0].hostname)
 	if [ -n "$system_hostname" ];then
+		echo "system_hostname is exist:$system_hostname"
 		return 0
-  fi
+	fi
 
 	# Set the board name as the default system hostname
 	if [ -f /tmp/sysinfo/board_name ];then

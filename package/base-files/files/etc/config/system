@@ -1,5 +1,4 @@
 config system
-	option hostname	WiFiSong
 	option timezone	CTS-8
 
 config timeserver ntp
