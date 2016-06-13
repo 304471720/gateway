@@ -16,6 +16,16 @@ define Profile/WIFISONG_WS151/description
 endef
 $(eval $(call Profile,WIFISONG_WS151))
 
+define Profile/WIFISONG_WS155
+	NAME:=WiFiSong WS155
+	PACKAGES:=
+endef
+
+define Profile/WIFISONG_WS155/description
+	Package set optimized for the WiFiSong WS155.
+endef
+$(eval $(call Profile,WIFISONG_WS155))
+
 define Profile/WIFISONG_WS230
 	NAME:=WiFiSong WS230
 	PACKAGES:=

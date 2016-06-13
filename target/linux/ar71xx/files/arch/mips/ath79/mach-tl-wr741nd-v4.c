@@ -181,6 +181,20 @@ static void __init wifisong_ws151_setup(void)
 MIPS_MACHINE(ATH79_MACH_WIFISONG_WS151, "WiFiSong-WS151",
         "WiFiSong WS151", wifisong_ws151_setup);
 
+static void __init wifisong_ws155_setup(void)
+{
+	tl_ap121_setup();
+
+	ath79_register_leds_gpio(-1, ARRAY_SIZE(tl_wr741ndv4_leds_gpio) - 1,
+				tl_wr741ndv4_leds_gpio);
+	ath79_register_gpio_keys_polled(1, TL_WR741NDV4_KEYS_POLL_INTERVAL,
+				ARRAY_SIZE(tl_wr741ndv4_gpio_keys),
+				tl_wr741ndv4_gpio_keys);
+}
+
+MIPS_MACHINE(ATH79_MACH_WIFISONG_WS155, "WiFiSong-WS155",
+        "WiFiSong WS155", wifisong_ws155_setup);
+
 static void __init tl_mr3220v2_setup(void)
 {
 	tl_ap121_setup();

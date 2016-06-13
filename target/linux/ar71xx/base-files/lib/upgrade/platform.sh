@@ -389,6 +389,7 @@ platform_check_image() {
 		;;
 
 	wifisong-ws151 | \
+	wifisong-ws155 | \
 	wifisong-ws230 | \
 	wifisong-ws215 | \
 	wifisong-ws220)
