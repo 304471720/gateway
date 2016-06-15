@@ -23,6 +23,8 @@
 #include "machtypes.h"
 
 #define TL_WR741NDV4_GPIO_BTN_RESET	11
+#define WIFISONG_WS151_GPIO_BTN_RESET	11
+#define WIFISONG_WS155_GPIO_BTN_RESET	12
 #define TL_WR741NDV4_GPIO_BTN_WPS	26
 
 #define TL_WR741NDV4_GPIO_LED_WLAN	0
@@ -100,7 +102,43 @@ static struct gpio_keys_button tl_wr741ndv4_gpio_keys[] __initdata = {
 		.code		= KEY_RESTART,
 		.debounce_interval = TL_WR741NDV4_KEYS_DEBOUNCE_INTERVAL,
 		.gpio		= TL_WR741NDV4_GPIO_BTN_RESET,
+		.active_low	= 1,
+	}, {
+		.desc		= "WPS",
+		.type		= EV_KEY,
+		.code		= KEY_WPS_BUTTON,
+		.debounce_interval = TL_WR741NDV4_KEYS_DEBOUNCE_INTERVAL,
+		.gpio		= TL_WR741NDV4_GPIO_BTN_WPS,
 		.active_low	= 0,
+	}
+};
+
+static struct gpio_keys_button wifisong_ws151_gpio_keys[] __initdata = {
+	{
+		.desc		= "reset",
+		.type		= EV_KEY,
+		.code		= KEY_RESTART,
+		.debounce_interval = TL_WR741NDV4_KEYS_DEBOUNCE_INTERVAL,
+		.gpio		= WIFISONG_WS151_GPIO_BTN_RESET,
+		.active_low	= 1,
+	}, {
+		.desc		= "WPS",
+		.type		= EV_KEY,
+		.code		= KEY_WPS_BUTTON,
+		.debounce_interval = TL_WR741NDV4_KEYS_DEBOUNCE_INTERVAL,
+		.gpio		= TL_WR741NDV4_GPIO_BTN_WPS,
+		.active_low	= 0,
+	}
+};
+
+static struct gpio_keys_button wifisong_ws155_gpio_keys[] __initdata = {
+	{
+		.desc		= "reset",
+		.type		= EV_KEY,
+		.code		= KEY_RESTART,
+		.debounce_interval = TL_WR741NDV4_KEYS_DEBOUNCE_INTERVAL,
+		.gpio		= WIFISONG_WS155_GPIO_BTN_RESET,
+		.active_low	= 1,
 	}, {
 		.desc		= "WPS",
 		.type		= EV_KEY,
@@ -174,8 +212,8 @@ static void __init wifisong_ws151_setup(void)
 	ath79_register_leds_gpio(-1, ARRAY_SIZE(tl_wr741ndv4_leds_gpio) - 1,
 				tl_wr741ndv4_leds_gpio);
 	ath79_register_gpio_keys_polled(1, TL_WR741NDV4_KEYS_POLL_INTERVAL,
-				ARRAY_SIZE(tl_wr741ndv4_gpio_keys),
-				tl_wr741ndv4_gpio_keys);
+				ARRAY_SIZE(wifisong_ws151_gpio_keys),
+				wifisong_ws151_gpio_keys);
 }
 
 MIPS_MACHINE(ATH79_MACH_WIFISONG_WS151, "WiFiSong-WS151",
@@ -188,8 +226,8 @@ static void __init wifisong_ws155_setup(void)
 	ath79_register_leds_gpio(-1, ARRAY_SIZE(tl_wr741ndv4_leds_gpio) - 1,
 				tl_wr741ndv4_leds_gpio);
 	ath79_register_gpio_keys_polled(1, TL_WR741NDV4_KEYS_POLL_INTERVAL,
-				ARRAY_SIZE(tl_wr741ndv4_gpio_keys),
-				tl_wr741ndv4_gpio_keys);
+				ARRAY_SIZE(wifisong_ws155_gpio_keys),
+				wifisong_ws155_gpio_keys);
 }
 
 MIPS_MACHINE(ATH79_MACH_WIFISONG_WS155, "WiFiSong-WS155",
