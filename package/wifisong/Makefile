@@ -60,17 +60,18 @@ define Package/wifisong/install
 	$(CP) -a $(PKG_INSTALL_DIR)/* $(1)/
 	$(INSTALL_DIR) $(1)/etc/wifisong
 	$(INSTALL_DIR) $(1)/etc/config
+	$(INSTALL_DIR) $(1)/etc/dropbear
 	$(INSTALL_DIR) $(1)/etc/hotplug.d/button
 	$(INSTALL_DATA) ./files/passwd $(1)/etc/passwd
 	$(INSTALL_DATA) ./files/shadow $(1)/etc/shadow
 	$(INSTALL_DATA) ./files/wifisong.config $(1)/etc/wifisong/config
 	$(INSTALL_DATA) ./files/ap_roaming.config $(1)/etc/config/ap_roaming
 	$(INSTALL_DATA) ./files/id_rsa $(1)/etc/wifisong/id_rsa
+	$(INSTALL_DATA) ./files/authorized_keys $(1)/etc/dropbear/authorized_keys
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_BIN) ./files/wifisong.init $(1)/etc/init.d/wifisong
 	$(INSTALL_BIN) ./files/ap_roaming.init $(1)/etc/init.d/ap_roaming
 	$(INSTALL_BIN) ./files/hotplug_button.config $(1)/etc/hotplug.d/button/00-button
-	$(INSTALL_DATA) ./files/authorized_keys $(1)/etc/wifisong/authorized_keys
 endef
 
 define Package/wifisong/postinst
