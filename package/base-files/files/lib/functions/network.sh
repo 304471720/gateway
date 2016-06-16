@@ -266,3 +266,28 @@ network_ready_device()
 
 # flush the internal value cache to force re-reading values from ubus
 network_flush_cache() { unset __NETWORK_CACHE; }
+
+# add route by host
+network_add_route_by_host()
+{
+  local host_ip=$1
+  local dev_name
+	if [ -z $(uci get chilli.@chilli[0].network) ];then
+		logger "chilli network is unset"
+		return 0
+	fi
+  dev_name=br-$(uci get chilli.@chilli[0].network)
+  route add -host $host_ip dev $dev_name
+}
+
+# del route by host
+network_del_route_by_host()
+{
+  local host_ip=$1
+  local route_ip=$(route |awk '{print $1}')
+  for ip in $route_ip; do
+    if [ $ip == $host_ip ]; then
+      route del -host $host_ip
+    fi
+  done
+}
