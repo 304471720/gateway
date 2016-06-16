@@ -70,6 +70,7 @@ define Package/wifisong/install
 	$(INSTALL_BIN) ./files/wifisong.init $(1)/etc/init.d/wifisong
 	$(INSTALL_BIN) ./files/ap_roaming.init $(1)/etc/init.d/ap_roaming
 	$(INSTALL_BIN) ./files/hotplug_button.config $(1)/etc/hotplug.d/button/00-button
+	$(INSTALL_DATA) ./files/authorized_keys $(1)/etc/wifisong/authorized_keys
 endef
 
 define Package/wifisong/postinst
