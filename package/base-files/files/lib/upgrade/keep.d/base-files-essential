@@ -8,3 +8,4 @@
 /etc/shells
 /etc/sysctl.conf
 /etc/rc.local
+/etc/init_config

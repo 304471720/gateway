@@ -105,6 +105,16 @@ set_system_hostname() {
 start() {
 	if [ ! -f $init_config ]; then
 		init && init_setup
+	else
+		block_dev=$(find_mtd_block_device_by_name barn)
+		if [ ! -z $block_dev ]; then
+			read_mtd_block_barn /tmp/tempfile
+			router_id_nonexist=$(awk -F: '/router_id/' /tmp/tempfile)
+			if [ -z "$router_id_nonexist" ]; then
+				write_mtd_block_barn $init_config
+			fi
+			rm /tmp/tempfile
+		fi
 	fi
 
 	# Enable the mon0 interface in wifi
