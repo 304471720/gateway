@@ -28,7 +28,7 @@ include $(INCLUDE_DIR)/kernel.mk
 define Package/wifisong
   SECTION:=base
   CATEGORY:=Network
-  DEPENDS:=+libpthread +libstdcpp +tcpdump +netcat +screen +curl +coova-chilli +luci
+  DEPENDS:=+libpthread +libstdcpp +tcpdump +netcat +screen +curl +coova-chilli +luci +relayd
   DEFAULT:=y
   TITLE:=WiFiSong utility
   #DESCRIPTION:=This variable is obsolete. use the Package/name/description define instead!

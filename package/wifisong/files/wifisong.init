@@ -82,7 +82,7 @@ set_dhcp_hostname() {
 	if [ -f /tmp/sysinfo/board_name ];then
 		name=$(cat /tmp/sysinfo/board_name)
 		uci set network.wan.hostname=$name
-		uci commit
+		uci commit network
 	fi
 }
 
@@ -98,7 +98,7 @@ set_system_hostname() {
 	if [ -f /tmp/sysinfo/board_name ];then
 		name=$(cat /tmp/sysinfo/board_name)
 		uci set system.@system[0].hostname=$name
-		uci commit
+		uci commit system
 	fi
 }
 
