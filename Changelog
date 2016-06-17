@@ -1,0 +1,20 @@
+== ChangeLog (v3.1.5) ==
+*合并除x86型号以外的所有路由器的工程代码到develop分支；
+*所有设备型号支持barn分区保存/etc/init_config配置文件，支持硬件恢复出厂配置功能；
+*增加ap_roaming功能，定时剔除RSSI较低的用户；
+*新增设备型号ws720、ws155；
+*增加dhcp以设备类型为hostname获取IP地址；
+*设置设备型号为默认的系统hostname；
+*串口登录需要用户名和密码；
+*新增线程执行云AC命令，与ping的socket分开，修复wtp不支持ping、top等功能，支持切换目录（cd）命令；
+*修复设备ID未被绑定到商家时wtp内存泄漏的Bug；
+*修复wtp不能使用/etc/init.d/wtp restart命令重启服务的bug；
+*去除用.config保存特定型号的工程配置，全部依赖配置文件默认生成.config；
+*改善chilli认证后的转发性能，默认启用tap桥接口；
+*增加relayd应用，支持无线中继桥接；
+*增加debug.lbsdata.org设备的pub key到设备，可从服务器免密登录到远程路由器；
+*将/etc/init_config文件添加到/lib/upgrade/keep.d/base-files-essential升级保护文件列表，修复升级时没有barn分区导致设备重新获取设备ID的bug；
+*修复升级后mon0无法启动的bug；
+*若路由器没有无线模块则不启动wifi监控进程；
+*修复通过ssh升级远程路由器时ssh连接断开的问题；
+*支持巨智的服务端口配置文件可配；
