@@ -406,6 +406,9 @@ ar71xx_board_detect() {
 	*"DB120 reference board")
 		name="db120"
 		;;
+	*"WiFiSong WS550")
+		name="wifisong-ws550"
+		;;
 	*"DGL-5500 rev. A1")
 		name="dgl-5500-a1"
 		;;

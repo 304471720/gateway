@@ -91,6 +91,9 @@ cpe510)
 db120)
 	ucidef_set_led_usbdev "usb" "USB" "db120:green:usb" "1-1"
 	;;
+wifisong-ws550)
+	ucidef_set_led_usbdev "usb" "USB" "wifisong-ws550:green:usb" "1-1"
+	ucidef_set_led_netdev "wan" "WAN" "wifisong-ws550:green:status" "eth0"
 
 dragino2)
 	ucidef_set_led_wlan "wlan" "WLAN" "dragino2:red:wlan" "phy0tpt"

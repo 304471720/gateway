@@ -251,6 +251,7 @@ platform_check_image() {
 	unifi | \
 	unifi-outdoor | \
 	carambola2 | \
+	wifisong-ws550 | \
 	weio )
 		[ "$magic" != "2705" ] && {
 			echo "Invalid image type."

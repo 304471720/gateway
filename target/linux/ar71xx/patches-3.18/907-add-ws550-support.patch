@@ -1,0 +1,41 @@
+--- a/arch/mips/ath79/Kconfig
++++ b/arch/mips/ath79/Kconfig
+@@ -215,6 +215,18 @@ config ATH79_MACH_DB120
+ 	  Say 'Y' here if you want your kernel to support the
+ 	  Atheros DB120 reference board.
+ 
++config ATH79_MACH_WIFISONG_WS550
++        bool "WIFISONG WS550 support"
++        select SOC_AR934X
++        select ATH79_DEV_AP9X_PCI if PCI
++        select ATH79_DEV_ETH
++        select ATH79_DEV_GPIO_BUTTONS
++        select ATH79_DEV_LEDS_GPIO
++        select ATH79_DEV_M25P80
++        select ATH79_DEV_NFC
++        select ATH79_DEV_USB
++        select ATH79_DEV_WMAC
++
+ config ATH79_MACH_PB42
+ 	bool "Atheros PB42 board support"
+ 	select SOC_AR71XX
+--- a/arch/mips/ath79/Makefile
++++ b/arch/mips/ath79/Makefile
+@@ -60,6 +60,7 @@ obj-$(CONFIG_ATH79_MACH_BSB)		+= mach-bs
+ obj-$(CONFIG_ATH79_MACH_CAP4200AG)	+= mach-cap4200ag.o
+ obj-$(CONFIG_ATH79_MACH_CPE510)		+= mach-cpe510.o
+ obj-$(CONFIG_ATH79_MACH_DB120)		+= mach-db120.o
++obj-$(CONFIG_ATH79_MACH_WIFISONG_WS550)		+= mach-ws550.o
+ obj-$(CONFIG_ATH79_MACH_DLAN_PRO_500_WP)	+= mach-dlan-pro-500-wp.o
+ obj-$(CONFIG_ATH79_MACH_DLAN_PRO_1200_AC)	+= mach-dlan-pro-1200-ac.o
+ obj-$(CONFIG_ATH79_MACH_DGL_5500_A1)	+= mach-dgl-5500-a1.o
+--- a/arch/mips/ath79/machtypes.h
++++ b/arch/mips/ath79/machtypes.h
+@@ -46,6 +46,7 @@ enum ath79_mach_type {
+ 	ATH79_MACH_CARAMBOLA2,		/* 8devices Carambola2 */
+ 	ATH79_MACH_CPE510,		/* TP-LINK CPE510 */
+ 	ATH79_MACH_DB120,		/* Atheros DB120 reference board */
++	ATH79_MACH_WIFISONG_WS550,	/* WIFISONG WS550 */
+ 	ATH79_MACH_PB44,		/* Atheros PB44 reference board */
+ 	ATH79_MACH_DGL_5500_A1,		/* D-link DGL-5500 rev. A1 */
+ 	ATH79_MACH_DHP_1565_A1,		/* D-Link DHP-1565 rev. A1 */

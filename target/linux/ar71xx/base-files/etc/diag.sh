@@ -55,8 +55,9 @@ get_status_led() {
 	cpe510)
 		status_led="tp-link:green:link4"
 		;;
-	db120)
-		status_led="db120:green:status"
+	db120 |\
+	wifisong-ws550)
+		status_led="wifisong-ws550:green:status"
 		;;
 	dgl-5500-a1 |\
 	dhp-1565-a1|\
