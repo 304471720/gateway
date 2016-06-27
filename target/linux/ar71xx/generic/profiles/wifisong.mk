@@ -92,3 +92,14 @@ define Profile/WIFISONG_WS550/Description
 endef
 
 $(eval $(call Profile,WIFISONG_WS550))
+
+define Profile/WIFISONG_WS330
+	NAME:=WiFiSong WS330
+	PACKAGES:=kmod-usb-core kmod-usb2 kmod-usb-storage
+endef
+
+define Profile/WIFISONG_WS330/Description
+	Package set optimized for the WiFiSong WS330.
+endef
+
+$(eval $(call Profile,WIFISONG_WS330))

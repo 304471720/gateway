@@ -93,7 +93,14 @@ db120)
 	;;
 wifisong-ws550)
 	ucidef_set_led_usbdev "usb" "USB" "wifisong-ws550:green:usb" "1-1"
-	ucidef_set_led_netdev "wan" "WAN" "wifisong-ws550:green:status" "eth0"
+	ucidef_set_led_default "power" "System Power" "wifisong-ws550:green:status" "1"
+	ucidef_set_led_netdev "wan" "WAN" "wifisong-ws550:green:wan" "eth0"
+	ucidef_set_led_wlan "wlan" "WLAN" "wifisong-ws550:green:wlan" "phy0tpt"
+  ;;
+wifisong-ws330)
+	ucidef_set_led_usbdev "usb" "USB" "wifisong-ws330:green:usb" "1-1"
+	ucidef_set_led_wlan "wlan" "WLAN" "wifisong-ws330:green:wlan-2g" "phy0tpt"
+	;;
 
 dragino2)
 	ucidef_set_led_wlan "wlan" "WLAN" "dragino2:red:wlan" "phy0tpt"

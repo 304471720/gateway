@@ -409,6 +409,9 @@ ar71xx_board_detect() {
 	*"WiFiSong WS550")
 		name="wifisong-ws550"
 		;;
+	*"WiFiSong WS330")
+		name="wifisong-ws330"
+		;;
 	*"DGL-5500 rev. A1")
 		name="dgl-5500-a1"
 		;;

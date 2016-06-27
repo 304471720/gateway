@@ -470,6 +470,11 @@ wifisong-ws550)
 	ucidef_set_interface_wifi "wifi"
 	;;
 
+wifisong-ws330)
+	ucidef_set_interfaces_lan_wan "wlan0" "eth0"
+	ucidef_set_interface_wifi "wifi"
+	;;
+
 wzr-hp-g450h)
 	ucidef_set_interfaces_lan_wan "eth0.1" "eth0.2"
 	ucidef_add_switch "switch0" "1" "1"

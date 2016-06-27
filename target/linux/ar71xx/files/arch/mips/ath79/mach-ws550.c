@@ -44,9 +44,13 @@
 #define DB120_GPIO_LED_WLAN_2G		13
 #define DB120_GPIO_LED_STATUS		14
 //#define DB120_GPIO_LED_WPS		15
+#define WS550_GPIO_LED_WLAN		14
+#define WS550_GPIO_LED_WAN	  13
+#define WS550_GPIO_LED_STATUS	12
 
 #define DB120_GPIO_BTN_WPS		16
-#define DB120_GPIO_BTN_RESET            15
+#define WS550_GPIO_BTN_RESET            15
+#define WS330_GPIO_BTN_RESET            16
 
 #define DB120_KEYS_POLL_INTERVAL	20	/* msecs */
 #define DB120_KEYS_DEBOUNCE_INTERVAL	(3 * DB120_KEYS_POLL_INTERVAL)
@@ -56,27 +60,21 @@
 #define DB120_WMAC_CALDATA_OFFSET	0x1000
 #define DB120_PCIE_CALDATA_OFFSET	0x5000
 
-static struct gpio_led db120_leds_gpio[] __initdata =
+static struct gpio_led ws550_leds_gpio[] __initdata =
 {
     {
         .name		= "wifisong-ws550:green:status",
-        .gpio		= DB120_GPIO_LED_STATUS,
-        .active_low	= 1,
-    },
-    /*	{
-    		.name		= "wifisong-ws550:green:wps",
-    		.gpio		= DB120_GPIO_LED_WPS,
-    		.active_low	= 1,
-    	},
-    */
-    {
-        .name		= "wifisong-ws550:green:wlan-5g",
-        .gpio		= DB120_GPIO_LED_WLAN_5G,
+        .gpio		= WS550_GPIO_LED_STATUS,
         .active_low	= 1,
     },
     {
-        .name		= "wifisong-ws550:green:wlan-2g",
-        .gpio		= DB120_GPIO_LED_WLAN_2G,
+        .name		= "wifisong-ws550:green:wlan",
+        .gpio		= WS550_GPIO_LED_WLAN,
+        .active_low	= 1,
+    },
+    {
+        .name		= "wifisong-ws550:green:wan",
+        .gpio		= WS550_GPIO_LED_WAN,
         .active_low	= 1,
     },
     {
@@ -86,7 +84,31 @@ static struct gpio_led db120_leds_gpio[] __initdata =
     }
 };
 
-static struct gpio_keys_button db120_gpio_keys[] __initdata =
+static struct gpio_led ws330_leds_gpio[] __initdata =
+{
+    {
+        .name		= "wifisong-ws330:green:status",
+        .gpio		= DB120_GPIO_LED_STATUS,
+        .active_low	= 1,
+    },
+    {
+        .name		= "wifisong-ws330:green:wlan-5g",
+        .gpio		= DB120_GPIO_LED_WLAN_5G,
+        .active_low	= 1,
+    },
+    {
+        .name		= "wifisong-ws330:green:wlan-2g",
+        .gpio		= DB120_GPIO_LED_WLAN_2G,
+        .active_low	= 1,
+    },
+    {
+        .name		= "wifisong-ws330:green:usb",
+        .gpio		= DB120_GPIO_LED_USB,
+        .active_low	= 1,
+    }
+};
+
+static struct gpio_keys_button ws550_gpio_keys[] __initdata =
 {
     /*	{
     		.desc		= "WPS button",
@@ -102,11 +124,23 @@ static struct gpio_keys_button db120_gpio_keys[] __initdata =
         .type		= EV_KEY,
         .code		= KEY_RESTART,
         .debounce_interval = DB120_KEYS_DEBOUNCE_INTERVAL,
-        .gpio		= DB120_GPIO_BTN_RESET,
+        .gpio		= WS550_GPIO_BTN_RESET,
         .active_low	= 1,
     }
 };
-#if 0
+
+static struct gpio_keys_button ws330_gpio_keys[] __initdata =
+{
+    {
+        .desc		= "restart button",
+        .type		= EV_KEY,
+        .code		= KEY_RESTART,
+        .debounce_interval = DB120_KEYS_DEBOUNCE_INTERVAL,
+        .gpio		= WS330_GPIO_BTN_RESET,
+        .active_low	= 1,
+    }
+};
+
 static struct ar8327_pad_cfg db120_ar8327_pad0_cfg =
 {
     .mode = AR8327_PAD_MAC_RGMII,
@@ -146,7 +180,7 @@ static struct mdio_board_info db120_mdio0_info[] =
         .platform_data = &db120_ar8327_data,
     },
 };
-#endif
+
 static struct at803x_platform_data mi124_ar8035_data =
 {
     .enable_rgmii_rx_delay = 1,
@@ -189,7 +223,8 @@ static void __init wifisong_ws550_setup(void)
 {
     u8 *art = (u8 *) KSEG1ADDR(0x1fff0000);
     u8 *eep_mac_addr = (u8 *) KSEG1ADDR(0x1ffe004a);	//(0xbffe004a);
-    u8 mac_addr[6];
+    u8 mac_addr[ETH_ALEN];
+
     int i = 0;
 
     if(eep_mac_addr[0] != 0xff)
@@ -199,14 +234,15 @@ static void __init wifisong_ws550_setup(void)
             mac_addr[i] = (hexCharToValue(eep_mac_addr[i*2])<<4) + hexCharToValue(eep_mac_addr[i*2 + 1]);
         }
     }
+
     ath79_gpio_output_select(DB120_GPIO_LED_USB, AR934X_GPIO_OUT_GPIO);
     ath79_register_m25p80(NULL);
 
-    ath79_register_leds_gpio(-1, ARRAY_SIZE(db120_leds_gpio),
-                             db120_leds_gpio);
+    ath79_register_leds_gpio(-1, ARRAY_SIZE(ws550_leds_gpio),
+                             ws550_leds_gpio);
     ath79_register_gpio_keys_polled(-1, DB120_KEYS_POLL_INTERVAL,
-                                    ARRAY_SIZE(db120_gpio_keys),
-                                    db120_gpio_keys);
+                                    ARRAY_SIZE(ws550_gpio_keys),
+                                    ws550_gpio_keys);
     ath79_register_usb();
     ath79_register_wmac(art + DB120_WMAC_CALDATA_OFFSET, NULL);
     ap91_pci_init(art + DB120_PCIE_CALDATA_OFFSET, NULL);
@@ -232,4 +268,50 @@ static void __init wifisong_ws550_setup(void)
     //ath79_register_nfc();
 }
 
+static void __init wifisong_ws330_setup(void)
+{
+	u8 *art = (u8 *) KSEG1ADDR(0x1fff0000);
+
+	ath79_gpio_output_select(DB120_GPIO_LED_USB, AR934X_GPIO_OUT_GPIO);
+	ath79_register_m25p80(NULL);
+
+	ath79_register_leds_gpio(-1, ARRAY_SIZE(ws330_leds_gpio),
+				 ws330_leds_gpio);
+	ath79_register_gpio_keys_polled(-1, DB120_KEYS_POLL_INTERVAL,
+					ARRAY_SIZE(ws330_gpio_keys),
+					ws330_gpio_keys);
+	ath79_register_usb();
+	ath79_register_wmac(art + DB120_WMAC_CALDATA_OFFSET, NULL);
+	ap91_pci_init(art + DB120_PCIE_CALDATA_OFFSET, NULL);
+
+	ath79_setup_ar934x_eth_cfg(AR934X_ETH_CFG_RGMII_GMAC0 |
+				   AR934X_ETH_CFG_SW_ONLY_MODE);
+
+	ath79_register_mdio(1, 0x0);
+	ath79_register_mdio(0, 0x0);
+
+	ath79_init_mac(ath79_eth0_data.mac_addr, art + DB120_MAC0_OFFSET, 0);
+
+	mdiobus_register_board_info(db120_mdio0_info,
+				    ARRAY_SIZE(db120_mdio0_info));
+#if 0
+	/* GMAC0 is connected to an AR8327 switch */
+	ath79_eth0_data.phy_if_mode = PHY_INTERFACE_MODE_RGMII;
+	ath79_eth0_data.phy_mask = BIT(4);
+	ath79_eth0_data.mii_bus_dev = &ath79_mdio0_device.dev;
+	ath79_eth0_pll_data.pll_1000 = 0x06000000;
+	ath79_register_eth(0);
+#endif
+	/* GMAC1 is connected to the internal switch */
+	ath79_init_mac(ath79_eth1_data.mac_addr, art + DB120_MAC1_OFFSET, 0);
+	ath79_eth1_data.phy_if_mode = PHY_INTERFACE_MODE_GMII;
+	ath79_eth1_data.speed = SPEED_100;
+	ath79_eth1_data.duplex = DUPLEX_FULL;
+
+	ath79_register_eth(1);
+
+	ath79_register_nfc();
+}
+
 MIPS_MACHINE(ATH79_MACH_WIFISONG_WS550, "WiFiSong-WS550", "WiFiSong WS550",wifisong_ws550_setup);
+MIPS_MACHINE(ATH79_MACH_WIFISONG_WS330, "WiFiSong-WS330", "WiFiSong WS330",wifisong_ws330_setup);
