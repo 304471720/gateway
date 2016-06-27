@@ -5,6 +5,7 @@ START=99
 STOP=1
 
 . /lib/functions/wifisong.sh
+. /lib/functions.sh
 
 init_config=/etc/init_config
 
@@ -44,18 +45,53 @@ init() {
 	return 1
 }
 
+#set the wireless ssid name and radio parameter
+set_wireless_config() {
+	devidx=0
+	config_load wireless
+	while :; do
+		config_get channel "radio$devidx" channel
+		[ -n "$channel" ] || break
+
+		[ $channel -ge 36 ] && {
+			band="-5G"
+			uci set wireless.@wifi-iface[`expr $(($devidx*2)) + 1`].hidden=1
+			uci set wireless.radio$devidx.channel=149
+		}
+
+		# WiFi configuration
+		brand=$(awk -F '=' '/wifi_ssid/{print $2}' $init_config)
+		phymac=$(cat /sys/class/ieee80211/phy$devidx/macaddress |  \
+			sed -r 's/.+:([0-9a-fA-F]{2}):([0-9a-fA-F]{2})/\1\2/' | \
+			tr '[a-z]' '[A-Z]')
+		uci set wireless.@wifi-iface[$(($devidx*2))].ssid=$brand-$phymac$band
+		uci set wireless.@wifi-iface[`expr $(($devidx*2)) + 1`].ssid=$brand-Office$band
+
+		devidx=$(($devidx + 1))
+	done
+	uci commit wireless
+
+}
+
+wifi_monitor_start() {
+	if [ -f /etc/config/wireless ];then
+#		sleep 5
+		iw phy phy0 interface add mon0 type monitor
+		ifconfig mon0 up
+		ws-pktdump &
+		ws-pktpostprocess &
+		ws-pkttrans &
+		ws-station &
+	fi
+}
+
 init_setup() {
 	# Network configuration
 	lanip=$(awk -F '=' '/lan_ipaddr/{print $2}' $init_config)
 	uci set network.lan.ipaddr=$lanip
 
 	# WiFi configuration
-	brand=$(awk -F '=' '/wifi_ssid/{print $2}' $init_config)
-	phymac=$(cat /sys/class/ieee80211/phy0/macaddress |  \
-		sed -r 's/.+:([0-9a-fA-F]{2}):([0-9a-fA-F]{2})/\1\2/' | \
-		tr '[a-z]' '[A-Z]')
-	uci set wireless.@wifi-iface[0].ssid=$brand-$phymac
-	uci set wireless.@wifi-iface[1].ssid=$brand-Office
+	set_wireless_config
 
 	# Webadmin configuration
 	luCI_port=$(awk -F '=' '/luCI_port/{print $2}' $init_config)
@@ -125,15 +161,7 @@ start() {
 	ws-heartbeat &
 
 	# sniff
-	if [ -f /etc/config/wireless ];then
-#		sleep 5
-		iw phy phy0 interface add mon0 type monitor
-		ifconfig mon0 up
-		ws-pktdump &
-		ws-pktpostprocess &
-		ws-pkttrans &
-		ws-station &
-	fi
+	wifi_monitor_start
 
 	# utils
 	ws-remote &
