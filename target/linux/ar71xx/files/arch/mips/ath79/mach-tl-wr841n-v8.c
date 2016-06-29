@@ -257,6 +257,7 @@ static void __init ws_ap123_setup(void)
 {
 	u8 *mac = (u8 *) KSEG1ADDR(0x1f01fc00);
 	u8 *ee = (u8 *) KSEG1ADDR(0x1fff1000);
+  u8 wlan_mac[ETH_ALEN] = {0};
 
 	/* Disable JTAG, enabling GPIOs 0-3 */
 	/* Configure OBS4 line, for GPIO 4*/
@@ -288,7 +289,8 @@ static void __init ws_ap123_setup(void)
 	ath79_eth1_data.phy_if_mode = PHY_INTERFACE_MODE_GMII;
 	ath79_register_eth(1);
 
-	ath79_register_wmac(ee, mac);
+	ath79_init_mac(wlan_mac, mac, 1);
+	ath79_register_wmac(ee, wlan_mac);
 }
 
 static void __init tl_wr841n_v8_setup(void)

@@ -549,7 +549,7 @@ define Device/wifisong-ws151
     BOARDNAME := WiFiSong-WS151
     DEVICE_PROFILE := WIFISONG_WS151
     TPLINK_HWID := 0x07410004
-    CONSOLE := ttyATH0,115200
+    CONSOLE := ttyS0,115200
 endef
 TARGET_DEVICES += wifisong-ws151
 
@@ -558,7 +558,7 @@ define Device/wifisong-ws155
     BOARDNAME := WiFiSong-WS155
     DEVICE_PROFILE := WIFISONG_WS155
     TPLINK_HWID := 0x07410004
-    CONSOLE := ttyATH0,115200
+    CONSOLE := ttyS0,115200
 endef
 
 TARGET_DEVICES += wifisong-ws155
@@ -608,8 +608,8 @@ define Device/wifisong-ws230
     $(Device/tplink-16mlzma)
     BOARDNAME := WiFiSong-WS230
     DEVICE_PROFILE := WIFISONG_WS230
-    TPLINK_HWID := 0x07410004
-    CONSOLE := ttyATH0,115200
+    TPLINK_HWID := 0x08410008
+    CONSOLE := ttyS0,115200
 endef
 TARGET_DEVICES += wifisong-ws230
 

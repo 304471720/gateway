@@ -455,9 +455,16 @@ wifisong-ws155)
 
 wifisong-ws215 |\
 wifisong-ws220 |\
-wifisong-ws230 |\
 wifisong-ws280i |\
 wifisong-ws286i)
+	ucidef_set_interfaces_lan_wan "eth1.1" "eth0"
+	ucidef_set_interface_wifi "eth1.2"
+	ucidef_add_switch "switch0" "1" "1"
+	ucidef_add_switch_vlan "switch0" "1" "0t 1 2 3 4"
+	ucidef_add_switch_vlan "switch0" "2" "0t"
+	;;
+
+wifisong-ws230 )
 	ucidef_set_interfaces_lan_wan "eth1.1" "eth0"
 	ucidef_set_interface_wifi "eth1.2"
 	ucidef_add_switch "switch0" "1" "1"
