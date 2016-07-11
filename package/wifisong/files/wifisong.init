@@ -32,7 +32,11 @@ init() {
 	nonce=$(date | md5sum | sed -r 's/([0-9a-zA-Z]+) (.+)/\1/')
 	signature=$( (echo -n $nonce; echo -n "61F7B04E443C4F6FA08CD027DF5AC638") | \
 		md5sum | sed -r 's/([0-9a-zA-Z]+) (.+)/\1/' )
-	wget http://router.lbsdata.org/device/init?wmac=$wmac\&lmac=$lmac\&v=$version\&type=$routerType\&nonce=$nonce\&signature=$signature -O $init_config
+  while [ ! -f $init_config ]; do
+    wget http://router.lbsdata.org/device/init?wmac=$wmac\&lmac=$lmac\&v=$version\&type=$routerType\&nonce=$nonce\&signature=$signature -O $init_config
+
+    sleep 5
+  done
 
 	# Initializatin failed either init_config doesn't exist                
 	# or the file is in bad format
