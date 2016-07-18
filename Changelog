@@ -1,3 +1,14 @@
+== ChangeLog (v3.1.6) ==
+*新增设备型号ws330、ws550；
+*修改ws230 lan和wan MAC地址冲突的问题；
+*wifisong初始化脚本优化：取消再次启动wifi脚本，直接启动监控接口mon0，将无线配置修改移到脚本函数执行；
+*修复若在系统启动时网络未加载成功导致init_config文件不再下载、系统无法正常工作的bug；
+*修复dhcp option 60检测时修改了原数据包导致部分用户无法获取ip的bug；
+*新增网关微信连WiFi获取ssid配置，如果参数wechatssid被配置，则将不会读取无线参数；
+*新增macallowprefix配置，对配置过的MAC前缀将直接通过认证；
+*若没有无线配置，则返回巨智信号强度为0；
+*将chilli从hotplug改为系统脚本rc.d启动列表中启动；
+
 == ChangeLog (v3.1.5) ==
 *合并除x86型号以外的所有路由器的工程代码到develop分支；
 *所有设备型号支持barn分区保存/etc/init_config配置文件，支持硬件恢复出厂配置功能；
