@@ -109,7 +109,7 @@ EOF
 
 hostapd_common_add_bss_config() {
 	config_add_string 'bssid:macaddr' 'ssid:string'
-	config_add_boolean wds wmm uapsd hidden
+	config_add_boolean wds wmm uapsd hidden band_select_enable
 
 	config_add_int maxassoc max_inactivity
 	config_add_boolean disassoc_low_ack isolate short_preamble
@@ -164,6 +164,9 @@ hostapd_common_add_bss_config() {
 	config_add_int mcast_rate
 	config_add_array basic_rate
 	config_add_array supported_rates
+
+  config_add_int rssi_threshold probe_cycle_count supression_age_out \
+  dual_band_age_out scan_cycle_period_threshold
 }
 
 hostapd_set_bss_options() {
@@ -182,7 +185,8 @@ hostapd_set_bss_options() {
 		wps_pushbutton wps_label ext_registrar wps_pbc_in_m1 \
 		wps_device_type wps_device_name wps_manufacturer wps_pin \
 		macfilter ssid wmm uapsd hidden short_preamble rsn_preauth \
-		iapp_interface
+		iapp_interface band_select_enable rssi_threshold probe_cycle_count\
+    supression_age_out dual_band_age_out scan_cycle_period_threshold
 
 	set_default isolate 0
 	set_default maxassoc 0
@@ -193,6 +197,13 @@ hostapd_set_bss_options() {
 	set_default wmm 1
 	set_default uapsd 1
 
+	set_default band_select_enable 0
+	set_default rssi_threshold -83
+	set_default probe_cycle_count 2
+	set_default supression_age_out 20
+	set_default dual_band_age_out 60
+	set_default scan_cycle_period_threshold 500
+
 	append bss_conf "ctrl_interface=/var/run/hostapd"
 	if [ "$isolate" -gt 0 ]; then
 		append bss_conf "ap_isolate=$isolate" "$N"
@@ -202,6 +213,15 @@ hostapd_set_bss_options() {
 	fi
 	if [ "$max_inactivity" -gt 0 ]; then
 		append bss_conf "ap_max_inactivity=$max_inactivity" "$N"
+	fi
+
+	if [ "$band_select_enable" -gt 0 ]; then
+		append bss_conf "band_select_enable=$band_select_enable" "$N"
+		[ -n "$rssi_threshold" ] && append bss_conf "rssi_threshold=$rssi_threshold" "$N"
+		[ -n "$probe_cycle_count" ] && append bss_conf "probe_cycle_count=$probe_cycle_count" "$N"
+		[ -n "$supression_age_out" ] && append bss_conf "supression_age_out=$supression_age_out" "$N"
+		[ -n "$dual_band_age_out" ] && append bss_conf "dual_band_age_out=$dual_band_age_out" "$N"
+		[ -n "$scan_cycle_period_threshold" ] && append bss_conf "scan_cycle_period_threshold=$scan_cycle_period_threshold" "$N"
 	fi
 
 	append bss_conf "disassoc_low_ack=$disassoc_low_ack" "$N"
