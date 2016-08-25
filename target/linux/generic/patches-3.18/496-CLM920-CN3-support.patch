@@ -1,0 +1,19 @@
+--- a/drivers/usb/serial/option.c
++++ b/drivers/usb/serial/option.c
+@@ -52,6 +52,8 @@ static int option_send_setup(struct usb_
+ static void option_instat_callback(struct urb *urb);
+ 
+ /* Vendor and product IDs */
++#define CLM920_CN3_VID 				0x05C6 
++#define CLM920_CN3_PID 				0x9025
+ #define OPTION_VENDOR_ID			0x0AF0
+ #define OPTION_PRODUCT_COLT			0x5000
+ #define OPTION_PRODUCT_RICOLA			0x6000
+@@ -639,6 +641,7 @@ static const struct usb_device_id option
+ 	{ USB_DEVICE(QUANTA_VENDOR_ID, QUANTA_PRODUCT_GLX) },
+ 	{ USB_DEVICE(QUANTA_VENDOR_ID, QUANTA_PRODUCT_GKE) },
+ 	{ USB_DEVICE(QUANTA_VENDOR_ID, QUANTA_PRODUCT_GLE) },
++	{ USB_DEVICE(CLM920_CN3_VID, CLM920_CN3_PID) },
+ 	{ USB_DEVICE(QUANTA_VENDOR_ID, 0xea42),
+ 		.driver_info = (kernel_ulong_t)&net_intf4_blacklist },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(HUAWEI_VENDOR_ID, 0x1c05, USB_CLASS_COMM, 0x02, 0xff) },

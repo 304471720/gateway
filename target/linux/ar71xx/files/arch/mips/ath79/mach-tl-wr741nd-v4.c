@@ -22,7 +22,9 @@
 #include "dev-wmac.h"
 #include "machtypes.h"
 
+#define WIFISONG_WS150B_GPIO_YUGACLM920_RESET 7
 #define TL_WR741NDV4_GPIO_BTN_RESET	11
+#define WIFISONG_WS150B_GPIO_BTN_RESET	11
 #define WIFISONG_WS151_GPIO_BTN_RESET	11
 #define WIFISONG_WS155_GPIO_BTN_RESET	12
 #define TL_WR741NDV4_GPIO_BTN_WPS	26
@@ -102,6 +104,24 @@ static struct gpio_keys_button tl_wr741ndv4_gpio_keys[] __initdata = {
 		.code		= KEY_RESTART,
 		.debounce_interval = TL_WR741NDV4_KEYS_DEBOUNCE_INTERVAL,
 		.gpio		= TL_WR741NDV4_GPIO_BTN_RESET,
+		.active_low	= 1,
+	}, {
+		.desc		= "WPS",
+		.type		= EV_KEY,
+		.code		= KEY_WPS_BUTTON,
+		.debounce_interval = TL_WR741NDV4_KEYS_DEBOUNCE_INTERVAL,
+		.gpio		= TL_WR741NDV4_GPIO_BTN_WPS,
+		.active_low	= 0,
+	}
+};
+
+static struct gpio_keys_button wifisong_ws150b_gpio_keys[] __initdata = {
+	{
+		.desc		= "reset",
+		.type		= EV_KEY,
+		.code		= KEY_RESTART,
+		.debounce_interval = TL_WR741NDV4_KEYS_DEBOUNCE_INTERVAL,
+		.gpio		= WIFISONG_WS150B_GPIO_BTN_RESET,
 		.active_low	= 1,
 	}, {
 		.desc		= "WPS",
@@ -204,6 +224,22 @@ static void __init tl_wr741ndv4_setup(void)
 
 MIPS_MACHINE(ATH79_MACH_TL_WR741ND_V4, "TL-WR741ND-v4",
 	     "TP-LINK TL-WR741ND v4", tl_wr741ndv4_setup);
+
+static void __init wifisong_ws150b_setup(void)
+{
+	tl_ap121_setup();
+	ath79_register_usb();
+	ath79_register_leds_gpio(-1, ARRAY_SIZE(tl_wr741ndv4_leds_gpio) - 1,
+				tl_wr741ndv4_leds_gpio);
+	ath79_register_gpio_keys_polled(1, TL_WR741NDV4_KEYS_POLL_INTERVAL,
+	ARRAY_SIZE(wifisong_ws150b_gpio_keys),
+	wifisong_ws150b_gpio_keys);
+	gpio_direction_output(WIFISONG_WS150B_GPIO_YUGACLM920_RESET,1);
+	gpio_set_value(WIFISONG_WS150B_GPIO_YUGACLM920_RESET,1);
+}
+
+MIPS_MACHINE(ATH79_MACH_WIFISONG_WS150B, "WiFiSong-WS150B",
+        "WiFiSong WS150B", wifisong_ws150b_setup);
 
 static void __init wifisong_ws151_setup(void)
 {

@@ -461,6 +461,7 @@ tl-wr741nd-v4)
 	ucidef_set_led_netdev "system" "SYSTEM" "tp-link:green:system" "eth1"
 	;;
 
+wifisong-ws150b |\
 wifisong-ws151 |\
 wifisong-ws155 |\
 wifisong-ws230)

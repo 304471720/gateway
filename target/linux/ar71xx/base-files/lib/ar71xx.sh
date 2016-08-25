@@ -959,6 +959,9 @@ ar71xx_board_detect() {
 	*"HiWiFi HC6361")
 		name="hiwifi-hc6361"
 		;;
+	*"WiFiSong WS150B")
+		name="wifisong-ws150b"
+		;;
 	*"WiFiSong WS151")
 		name="wifisong-ws151"
 		;;

@@ -247,6 +247,17 @@ set network.wan6.proto='dhcpv6'
 EOF
 }
 
+ucidef_set_interface_LTE() {
+	local ifname=$1
+	uci batch <<EOF
+set network.LTE='interface'
+set network.LTE.proto='3g'
+set network.LTE.device='/dev/ttyUSB3'
+set network.LTE.service='umts'
+set network.LTE.apn='ctlte'
+EOF
+}
+
 ucidef_set_interfaces_lan_wan() {
 	local lan_ifname=$1
 	local wan_ifname=$2
