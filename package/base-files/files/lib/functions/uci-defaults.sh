@@ -244,6 +244,7 @@ set network.wan.proto='dhcp'
 set network.wan6='interface'
 set network.wan6.ifname='$ifname'
 set network.wan6.proto='dhcpv6'
+set network.wan.metric='1'
 EOF
 }
 
@@ -255,6 +256,7 @@ set network.LTE.proto='3g'
 set network.LTE.device='/dev/ttyUSB3'
 set network.LTE.service='umts'
 set network.LTE.apn='ctlte'
+set network.LTE.metric='5'
 EOF
 }
 
