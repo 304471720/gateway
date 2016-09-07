@@ -89,6 +89,19 @@ wifi_monitor_start() {
 	fi
 }
 
+wifi_txpower_adjust() {
+	if grep -q "ws286i" /tmp/sysinfo/board_name ;then
+		config_load wireless
+		config_get txpower "radio0" txpower
+		[ -z "$txpower" ] || [ $txpower -gt 18 ] && {
+		echo "FORCE TO SET TXPOWER TO 18"
+		uci set wireless.radio0.txpower=18
+		uci commit wireless
+		wifi
+		}
+	fi
+}
+
 init_setup() {
 	# Network configuration
 	lanip=$(awk -F '=' '/lan_ipaddr/{print $2}' $init_config)
@@ -166,6 +179,9 @@ start() {
 
 	# sniff
 	wifi_monitor_start
+
+	# txpower adjustment for ws286i
+	wifi_txpower_adjust
 
 	# utils
 	ws-remote &
