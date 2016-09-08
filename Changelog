@@ -1,3 +1,16 @@
+== ChangeLog (v3.1.7) ==
+*修复chilli option60检测导致数据包被修改，部分终端无法获取IP的bug；
+*修复chilli在从无网络到有网络情况下不能正常工作的bug；
+*修复init_config在从无网到有网情况下，不能下载及后续不能正常工作的bug；
+*修改chilli从hotplug启动到系统启动列表启动，支持不使用chilli认证时可将其disable；
+*网关类型设置微信连WiFi的SSID配置及相应参数检测；
+*增加设备免认证MAC前缀，如网关类型设备下接WiFiSong路由器可免认证；
+*增加双频设备5G优先接入功能；
+*增加设备型号ws150b；
+*ws286i功率限制最大为18dBm；
+*修改漫游RSSI阈值为12；
+*修改上传到服务器的日志级别，默认warn，若需修改增加参数debug/info/warn；
+
 == ChangeLog (v3.1.6) ==
 *新增设备型号ws330、ws550；
 *修改ws230 lan和wan MAC地址冲突的问题；
