@@ -103,6 +103,10 @@ init_setup() {
 	router_password=$(awk -F '=' '/router_password/{print $2}' $init_config)
 	echo -e "$router_password\n$router_password" | passwd webadmin
 
+	# chilli configuration
+	chilli_url=$(cat /etc/init_config | grep chilli_uamurl | awk -F= '{print $2}')
+	uci set chilli.@chilli[0].uamserver=$chilli_url
+
 	# Commit the initial configuration
 	uci commit
 
