@@ -198,7 +198,7 @@ hostapd_set_bss_options() {
 	set_default uapsd 1
 
 	set_default band_select_enable 0
-	set_default rssi_threshold -83
+	set_default rssi_threshold -100
 	set_default probe_cycle_count 2
 	set_default supression_age_out 20
 	set_default dual_band_age_out 60
