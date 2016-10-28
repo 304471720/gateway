@@ -52,29 +52,50 @@ init() {
 #set the wireless ssid name and radio parameter
 set_wireless_config() {
 	devidx=0
+	band2=0
+	band5=0
+	phymac=$(cat /sys/class/ieee80211/phy$devidx/macaddress |  \
+			sed -r 's/.+:([0-9a-fA-F]{2}):([0-9a-fA-F]{2})/\1\2/' | \
+			tr '[a-z]' '[A-Z]')
 	config_load wireless
 	while :; do
 		config_get channel "radio$devidx" channel
 		[ -n "$channel" ] || break
 
+		[ $channel -le 14 ] && {
+			band2=1
+		}
+
 		[ $channel -ge 36 ] && {
-			band="-5G"
 			uci set wireless.@wifi-iface[`expr $(($devidx*2)) + 1`].hidden=1
 			uci set wireless.radio$devidx.channel=149
+			band5=1
 		}
 
 		# WiFi configuration
 		brand=$(awk -F '=' '/wifi_ssid/{print $2}' $init_config)
-		phymac=$(cat /sys/class/ieee80211/phy$devidx/macaddress |  \
-			sed -r 's/.+:([0-9a-fA-F]{2}):([0-9a-fA-F]{2})/\1\2/' | \
-			tr '[a-z]' '[A-Z]')
-		uci set wireless.@wifi-iface[$(($devidx*2))].ssid=$brand-$phymac$band
-		uci set wireless.@wifi-iface[`expr $(($devidx*2)) + 1`].ssid=$brand-Office$band
+		uci set wireless.@wifi-iface[$(($devidx*2))].ssid=$brand-$phymac
+		uci set wireless.@wifi-iface[`expr $(($devidx*2)) + 1`].ssid=$brand-Office
 
 		devidx=$(($devidx + 1))
 	done
-	uci commit wireless
 
+	[ $band2 -eq 1 -a $band5 -eq 1 ]  && {
+		devidx=0
+		while :; do
+			config_get channel "radio$devidx" channel
+			[ -n "$channel" ] || break
+
+			# WiFi configuration
+			uci set wireless.@wifi-iface[$(($devidx*2))].band_select_enable=1
+			uci set wireless.@wifi-iface[`expr $(($devidx*2)) + 1`].band_select_enable=1
+
+			devidx=$(($devidx + 1))
+		done
+
+	}
+
+	uci commit wireless
 }
 
 wifi_monitor_start() {

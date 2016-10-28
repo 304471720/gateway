@@ -439,7 +439,7 @@ $(eval $(call KernelPackage,iptunnel4))
 define KernelPackage/iptunnel6
   SUBMENU:=$(NETWORK_SUPPORT_MENU)
   TITLE:=IPv6 tunneling
-  DEPENDS:= +kmod-ipv6
+  DEPENDS:= +IPV6:kmod-ipv6
   KCONFIG:= \
 	CONFIG_INET6_TUNNEL
   FILES:=$(LINUX_DIR)/net/ipv6/tunnel6.ko
@@ -476,7 +476,7 @@ $(eval $(call KernelPackage,ipv6))
 
 define KernelPackage/sit
   SUBMENU:=$(NETWORK_SUPPORT_MENU)
-  DEPENDS:=+kmod-ipv6 +kmod-iptunnel +kmod-iptunnel4
+  DEPENDS:=+IPV6:kmod-ipv6 +kmod-iptunnel +kmod-iptunnel4
   TITLE:=IPv6-in-IPv4 tunnel
   KCONFIG:=CONFIG_IPV6_SIT \
 	CONFIG_IPV6_SIT_6RD=y
@@ -494,7 +494,7 @@ $(eval $(call KernelPackage,sit))
 define KernelPackage/ip6-tunnel
   SUBMENU:=$(NETWORK_SUPPORT_MENU)
   TITLE:=IP-in-IPv6 tunnelling
-  DEPENDS:= +kmod-ipv6 +kmod-iptunnel6
+  DEPENDS:= +IPV6:kmod-ipv6 +kmod-iptunnel6
   KCONFIG:= CONFIG_IPV6_TUNNEL
   FILES:=$(LINUX_DIR)/net/ipv6/ip6_tunnel.ko
   AUTOLOAD:=$(call AutoLoad,32,ip6_tunnel)
@@ -526,7 +526,7 @@ $(eval $(call KernelPackage,gre))
 define KernelPackage/gre6
   SUBMENU:=$(NETWORK_SUPPORT_MENU)
   TITLE:=GRE support over IPV6
-  DEPENDS:=+kmod-ipv6 +kmod-iptunnel +kmod-ip6-tunnel
+  DEPENDS:=+IPV6:kmod-ipv6 +kmod-iptunnel +kmod-ip6-tunnel
   KCONFIG:=CONFIG_IPV6_GRE
   FILES:=$(LINUX_DIR)/net/ipv6/ip6_gre.ko
   AUTOLOAD:=$(call AutoLoad,39,ip6_gre)
