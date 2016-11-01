@@ -8,14 +8,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=juzhi
-PKG_VERSION:=1.0.1
-PKG_RELEASE:=0
+PKG_VERSION:=1.0.0
+PKG_RELEASE:=1
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=git@bitbucket.org:zhiwifi/juzhi.git
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_RELEASE)
-PKG_SOURCE_VERSION:=7c33f194cd2f5f0eac1a205c6a02eb760fada4c1
-PKG_SOURCE_VERSION:=1c492754e3044e728d99c783880d5b361622cc6f
+PKG_SOURCE_VERSION:=bfca0a459d55a5bd7808c3e6b764128876bcbca5
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)-$(PKG_RELEASE)
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_RELEASE).tar.gz
@@ -29,7 +28,7 @@ include $(INCLUDE_DIR)/kernel.mk
 define Package/juzhi
   SECTION:=base
   CATEGORY:=Network
-  DEPENDS:=+libc +libpthread +libpcap +libuci
+  DEPENDS:=+libpthread +libpcap +libuci
   DEFAULT:=y
   TITLE:=juzhi utilities
   URL:=http://www.wifisong.com/
@@ -48,8 +47,15 @@ define Build/Compile
 	$(MAKE) -C $(PKG_BUILD_DIR)/src
 	mkdir -p $(PKG_INSTALL_DIR)
 	$(MAKE) -C $(PKG_BUILD_DIR) \
-		DESTDIR="$(PKG_INSTALL_DIR)" \
-		install
+	DESTDIR="$(PKG_INSTALL_DIR)" \
+	install
+
+	$(MAKE) -C $(PKG_BUILD_DIR)/src \
+	$(TARGET_CONFIGURE_OPTS) \
+	CFLAGS="$(TARGET_CFLAGS) -I$(STAGING_DIR)/include-host -I$(STAGING_DIR_HOST)/include -include endian.h  $(TARGET_
+	CFLAGS_EXTRA)" \
+	LDFLAGS="$(TARGET_LDFLAGS)"
+	$(STRIP) $(PKG_BUILD_DIR)/src/udp_server
 endef
 
 define Package/juzhi/install
