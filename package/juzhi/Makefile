@@ -14,7 +14,7 @@ PKG_RELEASE:=1
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=git@bitbucket.org:zhiwifi/juzhi.git
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_RELEASE)
-PKG_SOURCE_VERSION:=bfca0a459d55a5bd7808c3e6b764128876bcbca5
+PKG_SOURCE_VERSION:=6b9eb3df57cdbee64630578d653d9d4885c71916
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)-$(PKG_RELEASE)
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_RELEASE).tar.gz
@@ -44,18 +44,17 @@ define Build/Configure
 endef
 
 define Build/Compile
-	$(MAKE) -C $(PKG_BUILD_DIR)/src
-	mkdir -p $(PKG_INSTALL_DIR)
-	$(MAKE) -C $(PKG_BUILD_DIR) \
-	DESTDIR="$(PKG_INSTALL_DIR)" \
-	install
-
 	$(MAKE) -C $(PKG_BUILD_DIR)/src \
 	$(TARGET_CONFIGURE_OPTS) \
 	CFLAGS="$(TARGET_CFLAGS) -I$(STAGING_DIR)/include-host -I$(STAGING_DIR_HOST)/include -include endian.h  $(TARGET_
 	CFLAGS_EXTRA)" \
 	LDFLAGS="$(TARGET_LDFLAGS)"
 	$(STRIP) $(PKG_BUILD_DIR)/src/udp_server
+	mkdir -p $(PKG_INSTALL_DIR)
+	$(MAKE) -C $(PKG_BUILD_DIR) \
+	DESTDIR="$(PKG_INSTALL_DIR)" \
+	install
+
 endef
 
 define Package/juzhi/install
