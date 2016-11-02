@@ -9,6 +9,21 @@ STOP=1
 
 init_config=/etc/init_config
 
+set_maxclients() {
+	routerType=$(routerType)
+	if [ "$routerType" == "ws750" ];then
+		uci set chilli.@chilli[0].maxclients='500'
+	elif [ "$routerType" == "ws751" ];then
+		uci set chilli.@chilli[0].maxclients='1000'
+	elif [ "$routerType" == "ws752" ];then
+		uci set chilli.@chilli[0].maxclients='2000'
+	elif [ "$routerType" == "ws755" ];then
+		uci set chilli.@chilli[0].maxclients='5000'
+	fi
+
+	uci commit chilli
+}
+
 init() {
 	# Firmware version and router type information
 	routerType=$(routerType)
@@ -142,6 +157,7 @@ init_setup() {
 	uci set chilli.@chilli[0].uamserver=$chilli_url
 
 	# Commit the initial configuration
+	set_maxclients
 	uci commit
 
 	/etc/init.d/network reload
