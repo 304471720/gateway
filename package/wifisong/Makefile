@@ -73,10 +73,6 @@ define Package/wifisong/install
 	$(INSTALL_BIN) ./files/ap_roaming.init $(1)/etc/init.d/ap_roaming
 	$(INSTALL_BIN) ./files/hotplug_button.config $(1)/etc/hotplug.d/button/00-button
 
-	if [ "$(CONFIG_TARGET_x86_64_wsx86)" == "y" ];then \
-		echo "WS777" >> $(1)/etc/router_type;\
-	fi;
-
 	if [ "$(CONFIG_TARGET_x86_64_ws750)" == "y" ];then \
 		echo "ws750" >> $(1)/etc/router_type;\
 	fi;
