@@ -73,6 +73,12 @@ define Package/wifisong/install
 	$(INSTALL_BIN) ./files/ap_roaming.init $(1)/etc/init.d/ap_roaming
 	$(INSTALL_BIN) ./files/hotplug_button.config $(1)/etc/hotplug.d/button/00-button
 
+	if [ "$(CONFIG_TARGET_ar71xx_generic_WIFISONG_WS286i)" == "y" -o \
+	 "$(CONFIG_TARGET_ar71xx_generic_WIFISONG_WS280i)" == "y" ];then \
+		$(INSTALL_DATA) ./files/ibeacon.config $(1)/etc/config/ibeacon; \
+		$(INSTALL_BIN) ./files/ibeacon.init $(1)/etc/init.d/ibeacon; \
+	fi;
+
 	if [ "$(CONFIG_TARGET_x86_64_ws750)" == "y" ];then \
 		echo "ws750" >> $(1)/etc/router_type;\
 	fi;
