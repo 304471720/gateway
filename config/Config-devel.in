@@ -6,7 +6,7 @@
 
 menuconfig DEVEL
 	bool "Advanced configuration options (for developers)"
-	default n
+	default TARGET_x86
 
 	config BROKEN
 		bool "Show broken platforms / packages" if DEVEL
