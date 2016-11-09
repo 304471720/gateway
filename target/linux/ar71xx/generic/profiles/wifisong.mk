@@ -75,7 +75,10 @@ $(eval $(call Profile,WIFISONG_WS220))
 
 define Profile/WIFISONG_WS280i
 	NAME:=WiFiSong WS280i
-	PACKAGES:=kmod-usb-core kmod-usb2 kmod-usb-storage kmod-bluetooth bluez-utils
+	PACKAGES:=kmod-usb-core kmod-usb2 kmod-usb-ohci kmod-usb-ohci-pci kmod-usb-serial \
+		kmod-usb-serial-option kmod-usb-serial-qualcomm kmod-usb-serial-wwan kmod-usb-acm \
+		kmod-usb2-pci kmod-usb3 kmod-usb-storage kmod-bluetooth bluez-utils comgt luci-proto-3g \
+		minicom mwan3 luci-app-mwan3 usb-modeswitch
 endef
 
 define Profile/WIFISONG_WS280i/Description
