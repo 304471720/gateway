@@ -3,51 +3,146 @@
 # BASSFIRE@QQ
 START=99
 
-ibeacon_enable=$(uci get ibeacon.default.ibeacon_enable)
-uuid=$(uci get ibeacon.default.uuid)
-#major=$(uci get ibeacon.default.major)
-#minor=$(uci get ibeacon.default.minor)
-######MINOR######
-inor=`printf %x $(uci get ibeacon.default.minor)`
-a=`echo "$inor" |awk -F '' '{print $1}'`
-b=`echo "$inor" |awk -F '' '{print $2}'`
-c=`echo "$inor" |awk -F '' '{print $3}'`
-d=`echo "$inor" |awk -F '' '{print $4}'`
-#echo "$a"
-if [ ! $d ] & [ ! $c ] & [ ! $b ]; then
-  minor=`echo "00 0$a"`
-  elif  [ ! $d ] & [ ! $c ]; then
-  minor=`echo "00 $a$b"`
-  elif  [ ! $d ]; then
-  minor=`echo "0$a $b$c"`
-  else
-  minor=`echo "$a$b $c$d"`
-fi
-######MAJOR######
-ajor=`printf %x $(uci get ibeacon.default.major)`
-a=`echo "$ajor" |awk -F '' '{print $1}'`
-b=`echo "$ajor" |awk -F '' '{print $2}'`
-c=`echo "$ajor" |awk -F '' '{print $3}'`
-d=`echo "$ajor" |awk -F '' '{print $4}'`
-#echo "$a"
-if [ ! $d ] & [ ! $c ] & [ ! $b ]; then
-  major=`echo "00 0$a"`
-  elif  [ ! $d ] & [ ! $c ]; then
-  major=`echo "00 $a$b"`
-  elif  [ ! $d ]; then
-  major=`echo "0$a $b$c"`
-  else
-  major=`echo "$a$b $c$d"`
-fi
+start() {
+	ibeacon_enable=$(uci get ibeacon.default.ibeacon_enable)
+	report_enable=$(uci get ibeacon.report.enable)
 
-power=$(uci get ibeacon.default.power)
+	if [ "$ibeacon_enable" -eq 1 ];then
+		uuid=$(uci get ibeacon.default.uuid)
+		######MINOR######
+		inor=`printf %x $(uci get ibeacon.default.minor)`
+		a=`echo "$inor" |awk -F '' '{print $1}'`
+		b=`echo "$inor" |awk -F '' '{print $2}'`
+		c=`echo "$inor" |awk -F '' '{print $3}'`
+		d=`echo "$inor" |awk -F '' '{print $4}'`
+		#echo "$a"
+		if [ ! $d ] & [ ! $c ] & [ ! $b ]; then
+			minor=`echo "00 0$a"`
+		elif  [ ! $d ] & [ ! $c ]; then
+			minor=`echo "00 $a$b"`
+		elif  [ ! $d ]; then
+			minor=`echo "0$a $b$c"`
+		else
+			minor=`echo "$a$b $c$d"`
+		fi
+		######MAJOR######
+		ajor=`printf %x $(uci get ibeacon.default.major)`
+		a=`echo "$ajor" |awk -F '' '{print $1}'`
+		b=`echo "$ajor" |awk -F '' '{print $2}'`
+		c=`echo "$ajor" |awk -F '' '{print $3}'`
+		d=`echo "$ajor" |awk -F '' '{print $4}'`
+		#echo "$a"
+		if [ ! $d ] & [ ! $c ] & [ ! $b ]; then
+			major=`echo "00 0$a"`
+		elif  [ ! $d ] & [ ! $c ]; then
+			major=`echo "00 $a$b"`
+		elif  [ ! $d ]; then
+			major=`echo "0$a $b$c"`
+		else
+			major=`echo "$a$b $c$d"`
+		fi
 
-if      [ "$ibeacon_enable" -eq 1 ];then
-         hciconfig hci0 up
-         hciconfig hci0 noleadv
-         hcitool -i hci0 cmd 0x08 0x0008 1e 02 01 1a 1a ff 4c 00 02 15 $uuid $major $minor $power 00
-         hciconfig hci0 leadv
-else
-         hciconfig hci0 noleadv
-         hciconfig hci0 down
-fi
+		power=$(uci get ibeacon.default.power)
+		hciconfig hci0 up
+		#Do not Send adv
+		hciconfig hci0 noleadv
+		hcitool -i hci0 cmd 0x08 0x0008 1e 02 01 1a 1a ff 4c 00 02 15 $uuid $major $minor $power 00
+
+		#Set the device name, Max Length is 17 charactors
+		ibeacon_name=$(uci get ibeacon.default.name)
+		if [ -z "$ibeacon_name" ];then
+			lan=$(uci get network.lan.ifname)
+			phymac=$(cat /sys/class/net/$lan/address |  \
+				sed -r 's/.+:([0-9a-fA-F]{2}):([0-9a-fA-F]{2})/\1\2/' | \
+				tr '[a-z]' '[A-Z]')
+			board_name=$(cat /tmp/sysinfo/board_name |cut -d "-" -f2 |tr '[a-z]' '[A-Z]')
+			ibeacon_name=$board_name"-$phymac"
+			uci set ibeacon.default.name=$ibeacon_name
+			uci commit ibeacon
+		fi
+
+		if [ ! -z "$ibeacon_name" ];then
+			for i in `seq 29`;
+			do
+				name_c=`echo $ibeacon_name |cut -b $i`
+				if [ "$i" -le 17 ];then
+					dev_name=${dev_name}`printf "%02x " \'${name_c}`
+				else
+					dev_name=${dev_name}" 00"
+				fi
+			done
+			if [ "${#ibeacon_name}" -le 17 ];then
+				total_len=`expr ${#ibeacon_name} + 2`
+				name_len=`expr ${#ibeacon_name} + 1`
+			else
+				total_len=20
+				name_len=19
+			fi
+
+			hcitool -i hci0 cmd 0x08 0x0009 $total_len $name_len 09 $dev_name
+		fi
+
+		#Send adv
+		hciconfig hci0 leadv
+	fi
+
+	if  [ "$report_enable" -eq 1 ];then
+		hciconfig hci0 up
+		report_server=$(uci get ibeacon.report.server)
+		report_port=$(uci get ibeacon.report.port)
+		report_interval=$(uci get ibeacon.report.interval)
+		report_window=$(uci get ibeacon.report.window)
+		report_period=$(uci get ibeacon.report.period)
+		report_mac=$(uci get ibeacon.report.mac)
+		report_name=$(uci get ibeacon.report.name)
+
+		if [ ! -n "$report_server" ];then
+			echo "ble report server is unset"
+			exit
+		fi
+		server="-s $report_server"
+
+		if [ ! -n "$report_port" ];then
+			echo "ble report port is unset"
+			exit
+		fi
+		port=" -p $report_port"
+
+		if [ -n "$report_interval" ];then
+			if [ "$report_interval" -lt 18 -o "$report_interval" -gt 4096 ]; then
+				echo "ble scan interval should be [18,4096]ms"
+				exit
+			fi
+			interval="-i $report_interval"
+		fi
+
+		if [ -n "$report_window" ];then
+			if [ "$report_window" -lt 18 -o "$report_window" -gt 4096 ]; then
+				echo "ble scan window should be [18,4096]ms"
+				exit
+			fi
+			window="-w $report_window"
+		fi
+
+		if [ -n "$report_period" ];then
+			period="-I $report_period"
+		fi
+
+		if [ -n "$report_mac" ];then
+			mac="-i $report_mac"
+		fi
+
+		if [ -n "$report_name" ];then
+			name="-n $report_name"
+		fi
+
+		echo "hcitool toserver $server $port $interval $window $period $mac $name"
+		hcitool toserver $server $port $interval $window $period $mac $name &
+	fi
+}
+
+stop() {
+	killall -9 hcitool
+	hciconfig hci0 noleadv
+	hciconfig hci0 down
+}
