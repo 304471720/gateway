@@ -1,3 +1,11 @@
+== ChangeLog (v3.1.8) ==
+*增加coovachilli disable配置，允许disable为1时不启动chilli；
+*双频设备自动创建两个相同的SSID，并开启双频优先；
+*降低5G优先rssi阈值为-100；
+*修复macallowprefix（MAC前缀免认证）Bug
+*增加如果服务端处于系统维护状态，则用户免认证上网；
+*ws280i/ws286i蓝牙模块增加探测结果回传功能（包括相关WEB配置），增加设备名称配置功能；
+
 == ChangeLog (v3.1.7) ==
 *修复chilli option60检测导致数据包被修改，部分终端无法获取IP的bug；
 *修复chilli在从无网络到有网络情况下不能正常工作的bug；
