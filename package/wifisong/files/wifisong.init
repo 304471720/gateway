@@ -17,8 +17,10 @@ set_maxclients() {
 		uci set chilli.@chilli[0].maxclients='1000'
 	elif [ "$routerType" == "ws752" ];then
 		uci set chilli.@chilli[0].maxclients='2000'
+		dhcp.@dnsmasq[0].dhcpleasemax='2000'
 	elif [ "$routerType" == "ws755" ];then
 		uci set chilli.@chilli[0].maxclients='5000'
+		dhcp.@dnsmasq[0].dhcpleasemax='5000'
 	fi
 
 	uci commit chilli
