@@ -55,6 +55,9 @@ hostapd_common_add_device_config() {
 	config_add_boolean country_ie doth
 	config_add_string require_mode
 
+	config_add_string probe_server probe_port
+	config_add_int probe_interval
+
 	hostapd_add_log_config
 }
 
@@ -65,7 +68,7 @@ hostapd_prepare_device_config() {
 	local base="${config%%.conf}"
 	local base_cfg=
 
-	json_get_vars country country_ie beacon_int doth require_mode
+	json_get_vars country country_ie beacon_int doth require_mode probe_server probe_port probe_interval
 
 	hostapd_set_log_options base_cfg
 
@@ -79,6 +82,11 @@ hostapd_prepare_device_config() {
 		[ "$hwmode" = "a" -a "$doth" -gt 0 ] && append base_cfg "ieee80211h=1" "$N"
 	}
 	[ -n "$hwmode" ] && append base_cfg "hw_mode=$hwmode" "$N"
+
+	[ -n "$probe_server" ] && append base_cfg "probe_server=$probe_server" "$N"
+	[ -n "$probe_port" ] && append base_cfg "probe_port=$probe_port" "$N"
+	[ -n "$probe_interval" ] && append base_cfg "probe_interval=$probe_interval" "$N"
+
 
 	local brlist= br
 	json_get_values basic_rate_list basic_rate
@@ -165,8 +173,8 @@ hostapd_common_add_bss_config() {
 	config_add_array basic_rate
 	config_add_array supported_rates
 
-  config_add_int rssi_threshold probe_cycle_count supression_age_out \
-  dual_band_age_out scan_cycle_period_threshold
+	config_add_int rssi_threshold probe_cycle_count supression_age_out \
+		dual_band_age_out scan_cycle_period_threshold
 }
 
 hostapd_set_bss_options() {
