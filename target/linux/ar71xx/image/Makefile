@@ -553,6 +553,15 @@ define Device/wifisong-ws150b
 endef
 TARGET_DEVICES += wifisong-ws150b
 
+define Device/wifisong-ws555
+    $(Device/tplink-16mlzma)
+    BOARDNAME := WiFiSong-WS555
+    DEVICE_PROFILE := WIFISONG_WS555
+    TPLINK_HWID := 0x07410004
+    CONSOLE := ttyATH0,115200
+endef
+TARGET_DEVICES += wifisong-ws555
+
 define Device/wifisong-ws151
     $(Device/tplink-16mlzma)
     BOARDNAME := WiFiSong-WS151

@@ -241,6 +241,10 @@ static void __init wifisong_ws150b_setup(void)
 MIPS_MACHINE(ATH79_MACH_WIFISONG_WS150B, "WiFiSong-WS150B",
         "WiFiSong WS150B", wifisong_ws150b_setup);
 
+/*The machine of ws555 is same with ws150b*/
+MIPS_MACHINE(ATH79_MACH_WIFISONG_WS555, "WiFiSong-WS555",
+        "WiFiSong WS555", wifisong_ws150b_setup);
+
 static void __init wifisong_ws151_setup(void)
 {
 	tl_ap121_setup();

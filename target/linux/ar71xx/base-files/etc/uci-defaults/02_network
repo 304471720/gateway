@@ -444,6 +444,7 @@ wzr-hp-ag300h)
 	ucidef_add_switch_vlan "switch0" "1" "0 1 2 3 4"
 	;;
 
+wifisong-ws555 |\
 wifisong-ws150b )
 	ucidef_set_interfaces_lan_wan "eth0.1" "eth1"
 	ucidef_set_interface_wifi "eth0.2"

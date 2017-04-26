@@ -19,6 +19,19 @@ define Profile/WIFISONG_WS150B/description
 endef
 $(eval $(call Profile,WIFISONG_WS150B))
 
+define Profile/WIFISONG_WS555
+	NAME:=WiFiSong WS555
+ 	PACKAGES:= kmod-usb-core kmod-usb2 kmod-usb-ohci kmod-usb-ohci-pci kmod-usb-serial \
+		kmod-usb-serial-option kmod-usb-serial-qualcomm kmod-usb-serial-wwan \
+		kmod-usb2 kmod-usb2-pci kmod-usb3 bluez-utils kmod-bluetooth comgt luci-proto-3g \
+		minicom mwan3 luci-app-mwan3
+endef
+
+define Profile/WIFISONG_WS555/description
+	Package set optimized for the WiFiSong WS555.
+endef
+$(eval $(call Profile,WIFISONG_WS555))
+
 define Profile/WIFISONG_WS151
 	NAME:=WiFiSong WS151
 	PACKAGES:=
