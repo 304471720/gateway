@@ -1,13 +1,12 @@
 --- a/hostapd/Makefile
 +++ b/hostapd/Makefile
-@@ -846,6 +846,12 @@ ifdef CONFIG_IEEE80211N
+@@ -846,6 +846,11 @@ ifdef CONFIG_IEEE80211N
  OBJS += ../src/ap/ieee802_11_ht.o
  endif
  
 +ifndef WIFI_PROBE_BOARD
 +OBJS += ../src/ap/wifi_probe.o
 +OBJS += ../src/ap/sha1.o
-+CFLAGS += -DWIFI_PROBE
 +endif
 +
  ifdef CONFIG_IEEE80211AC
@@ -15,17 +14,18 @@
  endif
 --- a/hostapd/config_file.c
 +++ b/hostapd/config_file.c
-@@ -29,6 +29,9 @@ hostapd_parse_radius_attr(const char *va
+@@ -29,6 +29,10 @@ hostapd_parse_radius_attr(const char *va
  #endif /* EAP_SERVER */
  #endif /* CONFIG_NO_RADIUS */
  
 +extern char *g_report_server;
 +extern char *g_report_port;
 +extern u32 g_report_interval;
++extern u8 g_wifi_probe_disable;
  
  #ifndef CONFIG_NO_VLAN
  static int hostapd_config_read_vlan_file(struct hostapd_bss_config *bss,
-@@ -3315,6 +3318,15 @@ static int hostapd_config_fill(struct ho
+@@ -3315,6 +3319,17 @@ static int hostapd_config_fill(struct ho
  	} else if (os_strcmp(buf, "scan_cycle_period_threshold") == 0) {
  		bss->band_select.scan_cycle_period_threshold = atoi(pos);
  #endif
@@ -37,6 +37,8 @@
 +		g_report_port = os_strdup(pos);
 +	} else if (os_strcmp(buf, "probe_interval") == 0) {
 +		g_report_interval = atoi(pos);
++	} else if (os_strcmp(buf, "wifi_probe_disable") == 0) {
++		g_wifi_probe_disable = atoi(pos);
 +#endif
  	} else {
  		wpa_printf(MSG_ERROR,
@@ -76,7 +78,7 @@
  		hostapd_logger(hapd, mgmt->sa, HOSTAPD_MODULE_IEEE80211,
 --- /dev/null
 +++ b/src/ap/wifi_probe.c
-@@ -0,0 +1,419 @@
+@@ -0,0 +1,423 @@
 +/*
 + * Band Select Function
 + * Added by sunzh@wifisong.com
@@ -123,6 +125,7 @@
 +char *g_report_server = "up2.lbsdata.org";
 +char *g_report_port = "2501";
 +u32 g_report_interval = 0;
++u8 g_wifi_probe_disable = 0;
 +
 +struct ble_dev_info
 +{
@@ -418,6 +421,9 @@
 +	int msg_len = 0;
 +	int total_msg_len = 0;
 +	int diff_time = 0;
++
++	if(g_wifi_probe_disable == 1)
++		return 0;
 +
 +	if(device_counter == 0)
 +	{

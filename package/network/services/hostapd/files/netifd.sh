@@ -56,7 +56,7 @@ hostapd_common_add_device_config() {
 	config_add_string require_mode
 
 	config_add_string probe_server probe_port
-	config_add_int probe_interval
+	config_add_int probe_interval wifi_probe_disable
 
 	hostapd_add_log_config
 }
@@ -68,7 +68,7 @@ hostapd_prepare_device_config() {
 	local base="${config%%.conf}"
 	local base_cfg=
 
-	json_get_vars country country_ie beacon_int doth require_mode probe_server probe_port probe_interval
+	json_get_vars country country_ie beacon_int doth require_mode probe_server probe_port probe_interval wifi_probe_disable
 
 	hostapd_set_log_options base_cfg
 
@@ -86,6 +86,7 @@ hostapd_prepare_device_config() {
 	[ -n "$probe_server" ] && append base_cfg "probe_server=$probe_server" "$N"
 	[ -n "$probe_port" ] && append base_cfg "probe_port=$probe_port" "$N"
 	[ -n "$probe_interval" ] && append base_cfg "probe_interval=$probe_interval" "$N"
+	[ -n "$wifi_probe_disable" ] && append base_cfg "wifi_probe_disable=$wifi_probe_disable" "$N"
 
 
 	local brlist= br

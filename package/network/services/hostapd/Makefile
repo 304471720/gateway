@@ -95,6 +95,10 @@ ifneq ($(LOCAL_TYPE),hostapd)
 	CONFIG_DRIVER_ROBOSWITCH=$(CONFIG_PACKAGE_kmod-switch)
 endif
 
+ifeq ("$(CONFIG_TARGET_ar71xx_generic_WIFISONG_WS555)","y")
+    TARGET_CFLAGS += -DWIFI_PROBE
+endif
+
 ifdef CONFIG_USE_GLIBC
   TARGET_LDFLAGS += -lrt
   TARGET_LDFLAGS_C += -lrt
