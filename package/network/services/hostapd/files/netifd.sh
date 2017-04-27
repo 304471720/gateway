@@ -75,6 +75,11 @@ hostapd_prepare_device_config() {
 	set_default country_ie 1
 	set_default doth 1
 
+	set_default wifi_probe_disable 0
+	set_default probe_server "up2.lbsdata.org"
+	set_default probe_port "2501"
+	set_default probe_interval 0
+
 	[ -n "$country" ] && {
 		append base_cfg "country_code=$country" "$N"
 
