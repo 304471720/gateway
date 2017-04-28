@@ -208,7 +208,10 @@ start() {
 	ws-heartbeat &
 
 	# sniff
-	wifi_monitor_start
+	routerType=$(routerType)
+	if [ "$routerType" != "ws555" ];then
+		wifi_monitor_start
+	fi
 
 	# utils
 	ws-remote &
