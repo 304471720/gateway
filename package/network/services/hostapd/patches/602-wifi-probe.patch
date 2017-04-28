@@ -58,24 +58,18 @@
  		goto out;
 --- a/src/ap/ieee802_11.c
 +++ b/src/ap/ieee802_11.c
-@@ -2262,9 +2262,17 @@ int ieee802_11_mgmt(struct hostapd_data
+@@ -2262,7 +2262,11 @@ int ieee802_11_mgmt(struct hostapd_data
  
  
  	if (stype == WLAN_FC_STYPE_PROBE_REQ) {
 +		#ifdef WIFI_PROBE
 +		handle_wifi_probe(mgmt, fi);
-+		#else
- 		handle_probe_req(hapd, mgmt, len, fi);
 +		#endif
+		handle_probe_req(hapd, mgmt, len, fi);
++
  		return 1;
  	}
-+	/*If it is set to wifi probe, then disable the AP function.*/
-+	#ifdef WIFI_PROBE
-+	return 0;
-+	#endif
  
- 	if (os_memcmp(mgmt->da, hapd->own_addr, ETH_ALEN) != 0) {
- 		hostapd_logger(hapd, mgmt->sa, HOSTAPD_MODULE_IEEE80211,
 --- /dev/null
 +++ b/src/ap/wifi_probe.c
 @@ -0,0 +1,423 @@
